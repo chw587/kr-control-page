@@ -58,6 +58,126 @@
 }
 
 
+/* ---------- badge-count (공통 배지) ---------- */
+.badge-count {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 4px 12px;
+    border-radius: 20px;
+    line-height: 1;
+}
+
+.badge-count.violet {
+    background-color: #e0aaff !important;
+    color: #240046 !important;
+}
+
+.badge-count.blue {
+    background-color: #caf0f8 !important;
+    color: #023e8a !important;
+}
+
+.badge-count.green {
+    background-color: #cdeee0 !important;
+    color: #0f9d5c !important;
+}
+
+.badge-count.orang {
+    background-color: #ffdda1 !important;
+    color: #e77728 !important;
+}
+
+.badge-count.red {
+    background-color: #fbc3bc !important;
+    color: #461220 !important;
+}
+
+
+/* ---------- stats_board / graph table (공통) ---------- */
+.stats_board table.graph {
+    border-collapse: collapse;
+    display: block;
+}
+
+.stats_board table.graph tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stats_board table.graph tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.stats_board table.graph th[scope="row"] {
+    flex: 0 0 100%;
+    text-align: left;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    padding: 0 !important;
+}
+
+.stats_board table.graph td:nth-child(2) {
+    flex: 1;
+}
+
+.stats_board table.graph td.num {
+    flex: 0 0 auto;
+    text-align: right;
+    color: #333;
+    padding-left: 10px;
+    white-space: nowrap;
+}
+
+.graph tbody > * > * {
+    padding: 5px !important;
+    vertical-align: middle;
+}
+
+
+/* ---------- 누적(stacked) 게이지 + 범례 (공통) ---------- */
+.stacked-gauge {
+    display: flex;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #eee;
+}
+
+.stacked-gauge .segment {
+    height: 100%;
+}
+
+.gauge-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0 30px;
+}
+
+.gauge-legend li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #333;
+}
+
+.gauge-legend .legend-color {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+
 /* ==========================================================================
    << 용어집별 자료현황 >>
    ========================================================================== */
@@ -118,3 +238,77 @@
 /* ==========================================================================
    << 구축통계 >>
    ========================================================================== */
+
+/* ---------- build-count-wrap ---------- */
+.kr_Statistic .build-count-wrap {
+    display: flex;
+    gap: 24px;
+}
+
+.kr_Statistic .build-count-wrap .rate-card {
+    width: calc(100% / 3);
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 16px 20px;
+}
+
+.rate-label {
+    font-size: 14px;
+}
+
+.rate-value {
+    color: #333;
+    text-align: right;
+    margin-top: 8px;
+}
+
+
+/* ---------- build-Group-wrap ---------- */
+.kr_Statistic .build-Group-wrap {
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+}
+
+.kr_Statistic .build-Group-wrap > div {
+    flex: 1;
+}
+
+.kr_Statistic .build-Group-wrap > div .stats_board {
+    padding: 0;
+}
+
+.kr_Statistic .build-Group-wrap > div .stats_board > * {
+    padding: 10px 30px;
+}
+
+.kr_Statistic .build-Group-wrap > div .stats_board p {
+    background: #f0f1f6;
+}
+
+.kr_Statistic .build-Group-wrap .table_title_wrap strong {
+    color: #111;
+}
+
+.kr_Statistic .build-Group-wrap .stats_board table.graph {
+    border-top: none;
+    margin-top: 0px;
+}
+
+
+/* ---------- build-total-wrap ---------- */
+.kr_Statistic .build-total-wrap .table_title_wrap {
+    justify-content: start;
+}
+
+.kr_Statistic .build-total-wrap .stats_board {
+    position: relative;
+    padding: 0px;
+    border: none;
+    box-shadow: none;
+}
+
+.kr_Statistic .build-total-wrap .stats_board .gauge {
+    display: flex;
+    height: 20px;
+}
