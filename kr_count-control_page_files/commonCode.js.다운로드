@@ -1,0 +1,35 @@
+// 관련용어 항목코드에 맞는 관련용어 항목명을 반환
+// TODO : 현재 하드코딩, DB 조회로 변경필요
+function getRelateWordCdNm(currentRelateWordCd){
+    let result = "";
+    switch (currentRelateWordCd){
+        case '149' :
+            result = '다듬은 말';
+            break;
+        case '150' :
+            result = '다듬을 말 ';
+            break;
+        case '151' :
+            result = '동의어';
+            break;
+        case '152' :
+            result = '표준 전문 용어';
+            break;
+        case '153' :
+            result = '표준화대상어';
+            break;
+        case '154' :
+            result = '북한어';
+            break;
+        case '155' :
+            result = '남한어';
+            break;
+        case '156' :
+            result = '일치어';
+            break;
+        case '157' :
+            result = '참고어';
+            break;
+    }
+    return result;
+}

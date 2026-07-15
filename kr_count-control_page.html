@@ -1,0 +1,2099 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)http://192.168.5.99:42401/wordStatus/wordStatus.do -->
+<html lang="ko"><!-- HEADER -->
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="format-detection" content="telephone=no">
+	<title>통계 관리자 페이지</title>
+
+
+	<!-- 희원 추가 -->
+	<link rel="stylesheet" href="./kr_count-control_page_files/new/new.css">
+	<script src="./kr_count-control_page_files/new/new.js" defer></script>
+
+
+
+
+
+
+
+
+	<link rel="stylesheet" type="text/css" href="./kr_count-control_page_files/jquery-ui.min.css">
+	<link rel="stylesheet" type="text/css" href="./kr_count-control_page_files/webfont.css">
+	<link rel="stylesheet" type="text/css" href="./kr_count-control_page_files/reset.css">
+	<link rel="stylesheet" type="text/css" href="./kr_count-control_page_files/common.css">
+	<link rel="stylesheet" type="text/css" href="./kr_count-control_page_files/remixicon.css">
+	<link rel="stylesheet" type="text/css" href="./kr_count-control_page_files/custom.css">
+	<link rel="stylesheet" type="text/css" href="./kr_count-control_page_files/flatpickr.min.css">
+	<link rel="stylesheet" type="text/css" href="./kr_count-control_page_files/material_blue.css">
+	<link rel="stylesheet" type="text/css" href="./kr_count-control_page_files/select2.css">
+	<link rel="stylesheet" type="text/css" href="./kr_count-control_page_files/toastr.min.css">
+
+	<script src="./kr_count-control_page_files/jquery-1.12.4.min.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/jquery.serializejson.min.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/jquery.serializeObject.min.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/jquery.blockUI.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/jquery-ui.min.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/jsrender.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/common.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/custom.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/flatpickr-4.6.9.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/ko.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/lodash.min.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/jquery-contained-sticky-scroll.js.다운로드"></script><!-- 20220711추가기능 -->
+	<script src="./kr_count-control_page_files/index.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/xy.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/Animated.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/spin.js.다운로드"></script>
+	<style type="text/css"></style>
+	<script src="./kr_count-control_page_files/select2.full.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/commonCode.js.다운로드"></script>
+	<script src="./kr_count-control_page_files/toastr.min.js.다운로드"></script>
+
+	<!-- 가상키보드 -->
+	<script src="./kr_count-control_page_files/vk_loader.js.다운로드"></script>
+	<script type="text/javascript" charset="UTF-8" src="./kr_count-control_page_files/e.js.다운로드"></script>
+	<link rel="stylesheet" type="text/css" href="./kr_count-control_page_files/keyboard.css">
+	<script type="text/javascript" charset="UTF-8" src="./kr_count-control_page_files/virtualkeyboard.js.다운로드"></script>
+	<script type="text/javascript" charset="UTF-8" src="./kr_count-control_page_files/layouts.js.다운로드"></script>
+</head>
+
+<body>
+	<scrhttp: 192.168.5.99:42401="" js="" vk="" ipt="" type="text/javascript" src="extensions/scriptqueue.js">
+		<script src="./kr_count-control_page_files/scriptqueue.js.다운로드"></script>
+		<script src="./kr_count-control_page_files/e.js.다운로드" onload="return 1;" charset="UTF-8"></script>
+		<script src="./kr_count-control_page_files/virtualkeyboard.js.다운로드" onload="return 1;" charset="UTF-8"></script>
+		<script src="./kr_count-control_page_files/layouts.js.다운로드" onload="return 1;" charset="UTF-8"></script>
+		<link type="text/css" rel="stylesheet" href="./kr_count-control_page_files/keyboard(1).css">
+
+		<script>
+			const API_ROOT_URL = "/";
+
+			$(window).load(function () {
+
+
+				$('[title="검색 조건 저장"]').click(function () {
+					var formObj = $(this).closest('form');
+					var formData = $(formObj).serializeObject();
+
+					var memberId = 'cnstmng';
+					var pageUrl = "/wordStatus/wordStatus.do";
+					var paramsObj = {
+						'mbrId': memberId
+						, 'searchTrgtUrl': pageUrl
+					};
+
+					var paramsCounter = {
+						next: function (paramsObj) {
+							var findNextIndex = '';
+							for (var checkIndex in paramsObj) {
+								if (checkIndex.startsWith('listMbrSearchStngVO[')) {
+									var findIndex = checkIndex.replace(/[^0-9]/g, '').trim();
+									if (!isNaN(findIndex)) {
+										findNextIndex = findIndex;
+									}
+								}
+							}
+
+							if (findNextIndex == '') {
+								findNextIndex = 0;
+							} else {
+								findNextIndex = parseInt(findNextIndex) + 1
+							}
+							return findNextIndex;
+						}
+					};
+
+					for (var property in formData) {
+						var findHtmlObj = $(formObj).find('input[name="' + property + '"]');
+
+						//일단 hidden 객체 모두 처리하지 않음.
+						if ($(findHtmlObj).prop('type') == 'hidden') {
+							continue;
+						}
+
+						//타입이 텍스트면서 값이 없으면 처리하지 않음.
+						if ($(findHtmlObj).prop('type') == 'text' && $(findHtmlObj).val() == '') {
+							continue;
+						}
+
+						if (Array.isArray(formData[property])) {
+							//체크박스에 여러개가 선태된 경우
+							if (property != 'searchKeyword') {
+								for (var i = 0; i < formData[property].length; i++) {
+									var findNextIndex = paramsCounter.next(paramsObj);
+									paramsObj['listMbrSearchStngVO[' + findNextIndex + '].mbrId'] = memberId;
+									paramsObj['listMbrSearchStngVO[' + findNextIndex + '].searchTrgtUrl'] = pageUrl;
+									paramsObj['listMbrSearchStngVO[' + findNextIndex + '].searchTrgt'] = property;
+									paramsObj['listMbrSearchStngVO[' + findNextIndex + '].stngValue'] = formData[property][i];
+								}
+							}
+						} else {
+							//라디오 일 때 값이 없거나 on 상태는 전체 상태로 간주하기 때문에 처리하지 않음.
+							var findNextIndex = paramsCounter.next(paramsObj);
+							paramsObj['listMbrSearchStngVO[' + findNextIndex + '].mbrId'] = memberId;
+							paramsObj['listMbrSearchStngVO[' + findNextIndex + '].searchTrgtUrl'] = pageUrl;
+							paramsObj['listMbrSearchStngVO[' + findNextIndex + '].searchTrgt'] = property;
+
+							if ($(findHtmlObj).prop('type') == 'radio') {
+								findHtmlObj = $(formObj).find('input[name="' + property + '"]:checked');
+								paramsObj['listMbrSearchStngVO[' + findNextIndex + '].stngValue'] = $(findHtmlObj).val();
+							} else if ($(findHtmlObj).prop('type') == 'text' && property != 'searchKeyword') {
+								paramsObj['listMbrSearchStngVO[' + findNextIndex + '].stngValue'] = $(findHtmlObj).val();
+							} else if ($(findHtmlObj).prop('type') == 'checkbox') {
+								paramsObj['listMbrSearchStngVO[' + findNextIndex + '].stngValue'] = $(findHtmlObj).val();
+							}
+						}
+					}
+
+					//분야선택 정보만 별도로 처리한다.
+					if ($(formObj).find('input[name="cdNo"]').size() > 0 && $(formObj).find('input[name="clSystmCd"]').size() > 0) {
+						var selectedRealmCodeList = new Array();
+						$(formObj).find('input[name="cdNo"]').each(function () {
+							var cdNo = $(this).val();
+							var cdLevel = $(this).attr("data-cd-level");
+							var parentsCdNm = $(this).attr("data-parents-cd-nm");
+							var cdNm = $(this).attr("data-cd-nm");
+
+							selectedRealmCodeList.push(cdNo + "^" + cdLevel + "^" + parentsCdNm + "^" + cdNm);
+						});
+						var findNextIndex = paramsCounter.next(paramsObj);
+						paramsObj['listMbrSearchStngVO[' + findNextIndex + '].mbrId'] = memberId;
+						paramsObj['listMbrSearchStngVO[' + findNextIndex + '].searchTrgtUrl'] = pageUrl;
+						paramsObj['listMbrSearchStngVO[' + findNextIndex + '].searchTrgt'] = 'cdNo';
+						paramsObj['listMbrSearchStngVO[' + findNextIndex + '].stngValue'] = selectedRealmCodeList.join('|');
+						paramsObj['listMbrSearchStngVO[' + findNextIndex + '].dc'] = $(formObj).find('p[class="mt10 fonts14"]').html();
+
+						//분야선택 참조 타입
+						var clSystmCd = $(formObj).find('input[name="clSystmCd"]');
+						if (clSystmCd) {
+							var findNextIndex = paramsCounter.next(paramsObj);
+							paramsObj['listMbrSearchStngVO[' + findNextIndex + '].mbrId'] = memberId;
+							paramsObj['listMbrSearchStngVO[' + findNextIndex + '].searchTrgtUrl'] = pageUrl;
+							paramsObj['listMbrSearchStngVO[' + findNextIndex + '].searchTrgt'] = 'clSystmCd';
+							paramsObj['listMbrSearchStngVO[' + findNextIndex + '].stngValue'] = $(clSystmCd).val();
+						}
+					}
+					$.ajax({
+						url: '/common/saveSearchConditionByMbrId.do'
+						, type: 'post'
+						, data: paramsObj
+						, beforeSend: function () {
+						}
+						, success: function (resData) {
+							if (resData > 0) {
+								alert("정상적으로 저장되었습니다.");
+							}
+						}
+						, error: function (xhr, ajaxOptions, thrownError) {
+							alert("오류가 발생하였습니다.");
+						}
+						, complete: function () {
+						}
+					});
+				});
+
+
+				if ('') {
+					var searchCondition = JSON.parse('');
+					if (searchCondition) {
+						for (var property in searchCondition) {
+							var conditionObj = searchCondition[property];
+							var targetObj = $(document).find('input[name="' + conditionObj.searchTrgt + '"][value="' + conditionObj.stngValue + '"]');
+							var targetObjType = $(targetObj).prop('type');
+
+							if (targetObjType == 'hidden') {
+								continue;
+							}
+
+							if (targetObjType == 'radio' || targetObjType == 'checkbox') {
+								$(targetObj).prop('checked', true);
+							}
+
+							if (!targetObjType) {
+								targetObj = $(document).find('input[name="' + conditionObj.searchTrgt + '"]');
+								targetObjType = $(targetObj).prop('type');
+
+								if (targetObjType == 'radio') {
+									//input type=radio에 value가 없는 객체
+									if (conditionObj.stngValue == 'on') {
+										$(document).find('input[name="' + conditionObj.searchTrgt + '"]').each(function () {
+											if ($(this).prop('value') == conditionObj.stngValue) {
+												$(this).prop('checked', true);
+											}
+										});
+									}
+								} else if (targetObjType == 'text') {
+									$(targetObj).val(conditionObj.stngValue);
+								}
+							}
+						}
+					}
+				}
+
+
+
+
+
+				$('[title="검색 조건 가져오기"]').click(function () {
+					$.ajax({
+						url: '/common/getSearchConditionByMbrId.do'
+						, type: 'post'
+						, dataType: 'json'
+						, data: {
+							'mbrId': 'cnstmng'
+							, 'searchTrgtUrl': "/wordStatus/wordStatus.do"
+						}
+						, beforeSend: function () {
+						}
+						, success: function (data) {
+							for (var property in data.seachConditionList) {
+								var conditionObj = data.seachConditionList[property];
+								var targetObj = $(document).find('input[name="' + conditionObj.searchTrgt + '"][value="' + conditionObj.stngValue + '"]');
+								var targetObjType = $(targetObj).prop('type');
+
+								if (targetObjType == 'hidden') {
+									continue;
+								}
+
+								if (targetObjType == 'radio' || targetObjType == 'checkbox') {
+									$(targetObj).prop('checked', true);
+
+									//작업자 유형 (구축분과)
+									if (conditionObj.searchTrgt == 'searchOpertorTy') {
+										fnSearchOpertorTy(conditionObj.stngValue);
+									}
+
+									//분야[중분류없음 활성화] (구축분과)
+									if (conditionObj.searchTrgt == 'searchRealmTy') {
+										if (conditionObj.stngValue == 1) {
+											$("#realmPopBox").hide();
+										} else {
+											$("#realmPopBox").show();
+										}
+									}
+
+									//내 작업 상태(선정분과)
+									if (conditionObj.searchTrgt == 'searchMyCondition') {
+										fnMyConditionChg(conditionObj.stngValue);
+									}
+
+									//범주
+									if (conditionObj.searchTrgt == 'searchFieldWord') {
+										fnSearchFieldWord(conditionObj.stngValue);
+									}
+								}
+
+								if (!targetObjType) {
+									targetObj = $(document).find('input[name="' + conditionObj.searchTrgt + '"]');
+									targetObjType = $(targetObj).prop('type');
+
+									if (targetObjType == 'radio') {
+										//input type=radio에 value가 없는 객체
+										if (conditionObj.stngValue == 'on') {
+											$(document).find('input[name="' + conditionObj.searchTrgt + '"]').each(function () {
+												if ($(this).prop('value') == conditionObj.stngValue) {
+													$(this).prop('checked', true);
+												}
+											});
+										}
+									} else if (targetObjType == 'text') {
+										$(targetObj).val(conditionObj.stngValue);
+									}
+								}
+
+								/*
+									분야 정보 setting
+								*/
+								if (conditionObj.searchTrgt == 'searchRealmTyDtl') {
+									$(document).find('input[name="' + conditionObj.searchTrgt + '"]').prop("checked", true);
+								}
+
+								if (conditionObj.searchTrgt == "cdNo") {
+									var cdNoList = conditionObj.stngValue.split("|");
+
+									$("#realmPopBox > p").find("input").remove();
+									$(".fonts14 > span").remove();
+
+									$(cdNoList).each(function (i, item) {
+										var cdNo = item.split('^')[0];
+										var cdLevel = item.split('^')[1];
+										var parentsCdNm = item.split('^')[2];
+										var cdNm = item.split('^')[3];
+
+										$("#realmPopBox > p").append('<input type="hidden" name="cdNo" class="searchData" value="' + cdNo + '" data-cd-level="' + cdLevel + '" data-parents-cd-nm="' + parentsCdNm + '" data-cd-nm="' + cdNm + '"/>');
+									});
+									$(".fonts14").html(conditionObj.dc);
+
+								} else if (conditionObj.searchTrgt == "clSystmCd") {
+									$(".fonts14").after('<input type="hidden" name="clSystmCd" class="searchData" value="' + conditionObj.stngValue + '">');
+
+								}
+							}
+						}
+						, error: function (xhr, ajaxOptions, thrownError) {
+							alert("오류가 발생하였습니다.");
+						}
+						, complete: function () {
+						}
+					});
+				});
+			});//End Of $(window).load()
+		</script>
+
+		<!-- BODY -->
+
+		<!-- skip navigation -->
+		<div id="skip">
+			<a href="http://192.168.5.99:42401/wordStatus/wordStatus.do#contents">본문 바로가기</a>
+		</div>
+		<!-- //skip navigation -->
+
+		<div id="wrap">
+
+
+
+
+
+
+
+
+
+
+
+			<!-- header -->
+			<div id="header">
+				<div class="inner">
+					<div class="logo">
+						<h1><a href="http://www.korean.go.kr/" target="_blank" class="logo_kor">
+								<img src="./kr_count-control_page_files/logo_kor.png" alt="국립국어원">
+							</a>
+							<a href="http://192.168.5.99:42401/index.do" class="logo_cor">용어 구축 시스템</a>
+						</h1>
+					</div>
+					<ul class="utility">
+						<li><a href="http://192.168.5.99:42401/myPage/manualList.do" class="btn btnSS typeL2 ml10"
+								style="color: #44498d !important;">시스템 설명서</a></li>
+						<li><strong class="black1">구축관리자</strong>님</li>
+						<li><a href="http://192.168.5.99:42401/dashboard/dashboard.do">내 작업 현황</a></li>
+						<li><a href="http://192.168.5.99:42401/myPage/myPage.do">내 정보 관리</a></li>
+						<li><a href="http://192.168.5.99:42401/logout.do">나가기</a></li>
+					</ul>
+				</div>
+
+				<!-- gnb -->
+				<div id="gnb">
+					<ul class="group">
+
+
+
+						<li>
+
+
+
+							<a href="http://192.168.5.99:42401/wordWrit/index.do" title="용어 구축"
+								onclick="spin.start();">용어 구축</a>
+
+
+
+
+						</li>
+
+
+
+						<li>
+
+
+							<a href="javascript:;" title="용어 통계 분석">용어 통계 분석</a>
+
+
+
+
+
+							<div class="subNav">
+								<ul>
+
+
+
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/wordStatus/wordStatus.do" title="용어 통계"
+											onclick="spin.start();">용어 통계</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/dataVisual/visualBigKindsFormView.do"
+											title="선별 용어 사용 분석 시각화" onclick="spin.start();">선별 용어 사용 분석 시각화</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/dataVisual/visualBigKindsFormViewOut.do"
+											title="용어 사용 분석 시각화" onclick="spin.start();">용어 사용 분석 시각화</a>
+									</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								</ul>
+							</div>
+
+						</li>
+
+
+
+
+
+
+
+
+
+						<li>
+
+
+							<a href="javascript:;" title="공지사항, 과제 게시판">게시판</a>
+
+
+
+
+
+							<div class="subNav">
+								<ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/bbs/ntcBbs/ntcBbsList.do" title="공지 사항"
+											onclick="spin.start();">공지 사항</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/bbs/taskBbs/taskBbsList.do" title="과제 게시판"
+											onclick="spin.start();">과제 게시판</a>
+									</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								</ul>
+							</div>
+
+						</li>
+
+
+
+
+
+
+
+						<li>
+
+
+							<a href="javascript:;" title="분과 생성 및 관리 및 분과원 관리, 작업 통계">과제 관리</a>
+
+
+
+
+
+							<div class="subNav">
+								<ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/task/deptList.do" title="분과 생성 및 관리"
+											onclick="spin.start();">분과 생성 및 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/task/deptMbrList.do" title="분과원 관리"
+											onclick="spin.start();">분과원 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/task/jobStats.do" title="작업 통계"
+											onclick="spin.start();">작업 통계</a>
+									</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								</ul>
+							</div>
+
+						</li>
+
+
+
+
+
+
+
+
+
+						<li>
+
+
+
+							<a href="http://192.168.5.99:42401/task/taskList.do" title="신규 과제 등록"
+								onclick="spin.start();">과제 등록</a>
+
+
+
+
+						</li>
+
+
+
+						<li>
+
+
+							<a href="javascript:;" title="용어 관리, 용어집 관리">공개 자료 관리</a>
+
+
+
+
+
+							<div class="subNav">
+								<ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/wordMng/managedWordFormView.do" title="용어 관리"
+											onclick="spin.start();">용어 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/wordSupply/managedSupplyDeptFormView.do"
+											title="용어집 관리" onclick="spin.start();">용어집 관리</a>
+									</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								</ul>
+							</div>
+
+						</li>
+
+
+
+
+
+
+
+						<li>
+
+
+
+							<a href="http://192.168.5.99:42401/orgData/orgDataList.do" title="원자료 관리"
+								onclick="spin.start();">원자료 관리</a>
+
+
+
+
+						</li>
+
+
+
+						<li>
+
+
+							<a href="javascript:;" title="OPEN API 관리">오픈 API 관리</a>
+
+
+
+
+
+							<div class="subNav">
+								<ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/openAPI/openAPI.do" title="OPEN API 관리"
+											onclick="spin.start();">OPEN API 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/openAPI/openAPILog.do" title="OPEN API 로그"
+											onclick="spin.start();">OPEN API 로그</a>
+									</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								</ul>
+							</div>
+
+						</li>
+
+
+
+
+
+
+
+						<li>
+
+
+							<a href="javascript:;" title="일치어 구축">일치어 구축</a>
+
+
+
+
+
+							<div class="subNav">
+								<ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/matchWordWrit/wordWritList.do" title="일치어 구축"
+											onclick="spin.start();">일치어 구축</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/matchWordGroup/matchWordGroupList.do"
+											title="일치어 그룹 관리" onclick="spin.start();">일치어 그룹 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/matchWord/matchTaskList.do" title="일치어 과제 생성"
+											onclick="spin.start();">일치어 과제 생성</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/matchtask/deptList.do" title="일치어 분과 관리"
+											onclick="spin.start();">일치어 분과 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/matchtask/deptMbrList.do" title="일치어 분과원 관리"
+											onclick="spin.start();">일치어 분과원 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/matchtask/jobStats.do" title="일치어 작업 통계"
+											onclick="spin.start();">일치어 작업 통계</a>
+									</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								</ul>
+							</div>
+
+						</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+						<li>
+
+
+							<a href="javascript:;" title="분야 분류 구축">분야 분류 구축</a>
+
+
+
+
+
+							<div class="subNav">
+								<ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/realmClsf/realmClsfList.do" title="분야 분류 구축"
+											onclick="spin.start();">분야 분류 구축</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/realmTask/realmTaskList.do"
+											title="분야 분류 과제 관리" onclick="spin.start();">분야 분류 과제 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/realmTask/realmDeptList.do"
+											title="분야 분류 분과 관리" onclick="spin.start();">분야 분류 분과 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/realmTask/deptMbrList.do"
+											title="분야 분류 분과원 관리" onclick="spin.start();">분야 분류 분과원 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/realmTask/jobStats.do" title="분야 분류 작업 통계"
+											onclick="spin.start();">분야 분류 작업 통계</a>
+									</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								</ul>
+							</div>
+
+						</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+						<li>
+
+
+							<a href="javascript:;" title="지식그래프 구축">지식그래프 구축</a>
+
+
+
+
+
+							<div class="subNav">
+								<ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/ontology/taskList.do" title="지식그래프 과제 관리"
+											onclick="spin.start();">지식그래프 과제 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/ontology/deptList.do" title="지식그래프 분과 관리"
+											onclick="spin.start();">지식그래프 분과 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/ontology/deptMbrList.do" title="지식그래프 분과원 관리"
+											onclick="spin.start();">지식그래프 분과원 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/ontology/relationList.do" title="지식그래프 관계 관리"
+											onclick="spin.start();">지식그래프 관계 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/ontology/list.do" title="지식그래프 편집"
+											onclick="spin.start();">지식그래프 편집</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/ontology/listExamine.do" title="지식그래프 데이터 검사"
+											onclick="spin.start();">지식그래프 데이터 검사</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/ontology/wordExpsrList.do"
+											title="지식그래프 보급 노출 관리" onclick="spin.start();">지식그래프 보급 노출 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/ontology/ontologyOrgDataList.do"
+											title="지식그래프 원자료 관리" onclick="spin.start();">지식그래프 원자료 관리</a>
+									</li>
+
+
+
+									<li>
+										<a href="http://192.168.5.99:42401/ontology/ontologyStats.do"
+											title="지식그래프 작업 현황" onclick="spin.start();">지식그래프 작업 현황</a>
+									</li>
+
+
+
+								</ul>
+							</div>
+
+						</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+						<!-- 
+					<li>
+						<a>
+							<br>
+						</a>
+                	</li>
+                	 -->
+
+					</ul>
+				</div>
+				<!-- //.gnb -->
+			</div>
+			<!-- //.header -->
+
+
+
+
+
+
+
+
+
+
+			<script>
+
+				$(document).ready(function () {
+					wordStatusList.setPage(1);
+				});
+				var wordStatusList = {
+					reload: function () {
+						$("#frmTrgtWord input[name='selRownum']").val('');
+						//ajax.load("includeWordStatusList","/wordStatus/getWordStatusList.do", $("#frmTrgtWord").serializeJSON(), false);
+						$.ajax({
+							url: "/wordStatus/getWordStatusList.do",
+							type: "post",
+							dataType: "html",
+							beforeSend: function () {
+								spin.start();
+							},
+							data: $("#frmTrgtWord").serializeJSON(),
+							success: function (data) {
+								$("#includeWordStatus").html(data);
+							},
+							error: function (data) {
+								alert("오류가 발생하였습니다.");
+							},
+							complete: function () {
+								spin.stop();
+							}
+						});
+
+
+					}
+					, setPage: function (page) {
+						$("#frmTrgtWord input[name='pageIndex']").val(page);
+						wordStatusList.reload();
+					}
+					, setRows: function (rows) {
+						$("#frmTrgtWord input[name='pageUnit']").val(rows);
+						wordStatusList.setPage(1);
+					}
+				}
+
+				function fnExcel() {
+
+					var form = document.createElement("form");
+					form.setAttribute("charset", "UTF-8");
+					form.setAttribute("method", "POST"); // Get 또는 Post 입력
+					form.setAttribute("action", "/wordStatus/getWordStatusListExcel.do");
+					statusYear = $("select[name=statusYear]").val();
+					statusMonth = $("select[name=statusMonth]").val();
+					var hiddenField = document.createElement("input");
+					hiddenField.setAttribute("type", "hidden");
+					hiddenField.setAttribute("name", "statusYear");
+					hiddenField.setAttribute("value", statusYear);
+					var hiddenField2 = document.createElement("input");
+					hiddenField2.setAttribute("type", "hidden");
+					hiddenField2.setAttribute("name", "statusMonth");
+					hiddenField2.setAttribute("value", statusMonth);
+
+					form.appendChild(hiddenField);
+					form.appendChild(hiddenField2);
+					document.body.appendChild(form);
+					form.submit();
+
+				}
+
+				function fnExcel1() {
+
+					var form = document.createElement("form");
+					form.setAttribute("charset", "UTF-8");
+					form.setAttribute("method", "POST"); // Get 또는 Post 입력
+					form.setAttribute("action", "/wordStatus/getWordStatusListExcel.do");
+					statusYear = $("select[name=statusYear]").val();
+					statusMonth = $("select[name=statusMonth]").val();
+					var hiddenField = document.createElement("input");
+					hiddenField.setAttribute("type", "hidden");
+					hiddenField.setAttribute("name", "statusYear");
+					hiddenField.setAttribute("value", statusYear);
+					var hiddenField2 = document.createElement("input");
+					hiddenField2.setAttribute("type", "hidden");
+					hiddenField2.setAttribute("name", "statusMonth");
+					hiddenField2.setAttribute("value", statusMonth);
+
+					form.appendChild(hiddenField);
+					form.appendChild(hiddenField2);
+					document.body.appendChild(form);
+					form.submit();
+
+				}
+
+			</script>
+			<!-- container -->
+			<div id="contents" class="kr_Statistic">
+				<div class="content_area">
+					<div class="inner">
+
+						<ul class="tab mt30">
+							<li class="active" data-tab="wordStatus">
+								<a href="javascript:;">
+									<span>용어집별 자료현황</span></a>
+							</li>
+							<li data-tab="buildStatus">
+								<a href="javascript:;">
+									<span>구축통계</span></a>
+							</li>
+						</ul>
+
+						<div class="tab-panel" data-panel="wordStatus">
+							<div class="info_box violet">
+								<div>
+									<strong class="black1 mr30 "><label for="wordList">상태</label></strong>
+									<div class="select w400">
+
+
+										<span class="radiobox"><input type="radio" value="T" checked="checked"><label
+												for="Total">전체</label></span>
+										<span class="radiobox ml50"><input type="radio" value="C"><label
+												for="Confirm">확정</label></span>
+										<span class="radiobox ml50"><input type="radio" value="E"><label
+												for="Edit">확정(수정중)</label></span>
+
+									</div>
+								</div>
+
+								<a href="#" class="btn btnB type1">조회</a>
+							</div>
+
+							<div class="table_title_wrap mt15 mb10"
+								style="display: flex; align-items: center; justify-content: space-between">
+								<div style="display: flex; align-items: baseline; align-self: flex-end;">
+									<h3 class="m_tit inlineB"><strong>용어집별 통계 비교</strong></h3>
+
+								</div>
+								<div class="floatR count-wrap">
+									<div class="count build-system">
+										<span>용어집</span>
+										<span class="length">총 1,249,501건</span>
+									</div>
+									<div class="count online-system">
+										<span>온용어</span>
+										<span class="length">총 1,249,502건</span>
+									</div>
+									<a href="#" class="btn btnB typeL2 arrdown">결과 내려받기</a>
+								</div>
+							</div>
+
+							<div id="includeWordStatus">
+								<div class="table_wrap mt15">
+									<table>
+										<caption>분야 분류 체계 목록</caption>
+										<colgroup>
+											<col class="col-term">
+											<col class="col-data build-system">
+											<col class="col-data build-system">
+											<col class="col-data build-system">
+											<col class="col-data online-system">
+											<col class="col-data online-system">
+											<col class="col-data online-system">
+											<col class="col-data diff-system">
+											<col class="col-data diff-system">
+											<col class="col-data diff-system">
+										</colgroup>
+										<thead>
+											<tr>
+												<th rowspan="2">용어집</th>
+												<th class="build-system" colspan="3">구축
+													시스템<br><span>(보급분과-공개자료관리)</span></th>
+												<th class="online-system" colspan="3">온용어
+													시스템<br><span>(온용어관리시스템)</span></th>
+												<th class="diff-systems" colspan="3">차이<br><span>구축 시스템(전체)=&gt;수량차이는
+														컬럼색깔로 표시</span>
+												</th>
+											</tr>
+											<tr class="table-array">
+												<th scope="col" class="build-system">
+													<div class="th-inner">
+														<span class="th-label">전체</span>
+														<div>
+															<a href="#" class="tab_arrud"><i
+																	class="ri-arrow-up-s-fill"></i><span
+																	class="blind">올림차순</span></a>
+															<a href="#" class="tab_arrud ml5"><i
+																	class="ri-arrow-down-s-fill"></i><span
+																	class="blind">내림차순</span></a>
+														</div>
+													</div>
+												</th>
+												<th scope="col" class="build-system">
+													<div class="th-inner">
+														<span class="th-label">노출</span>
+														<div>
+															<a href="#" class="tab_arrud"><i
+																	class="ri-arrow-up-s-fill"></i><span
+																	class="blind">올림차순</span></a>
+															<a href="#" class="tab_arrud ml5"><i
+																	class="ri-arrow-down-s-fill"></i><span
+																	class="blind">내림차순</span></a>
+														</div>
+													</div>
+												</th>
+												<th scope="col" class="build-system">
+													<div class="th-inner">
+														<span class="th-label">비노출</span>
+														<div>
+															<a href="#" class="tab_arrud"><i
+																	class="ri-arrow-up-s-fill"></i><span
+																	class="blind">올림차순</span></a>
+															<a href="#" class="tab_arrud ml5"><i
+																	class="ri-arrow-down-s-fill"></i><span
+																	class="blind">내림차순</span></a>
+														</div>
+													</div>
+												</th>
+												<th scope="col" class="online-system">
+													<div class="th-inner">
+														<span class="th-label">전체</span>
+														<div>
+															<a href="#" class="tab_arrud"><i
+																	class="ri-arrow-up-s-fill"></i><span
+																	class="blind">올림차순</span></a>
+															<a href="#" class="tab_arrud ml5"><i
+																	class="ri-arrow-down-s-fill"></i><span
+																	class="blind">내림차순</span></a>
+														</div>
+													</div>
+												</th>
+												<th scope="col" class="online-system">
+													<div class="th-inner">
+														<span class="th-label">노출</span>
+														<div>
+															<a href="#" class="tab_arrud"><i
+																	class="ri-arrow-up-s-fill"></i><span
+																	class="blind">올림차순</span></a>
+															<a href="#" class="tab_arrud ml5"><i
+																	class="ri-arrow-down-s-fill"></i><span
+																	class="blind">내림차순</span></a>
+														</div>
+													</div>
+												</th>
+												<th scope="col" class="online-system">
+													<div class="th-inner">
+														<span class="th-label">비노출</span>
+														<div>
+															<a href="#" class="tab_arrud"><i
+																	class="ri-arrow-up-s-fill"></i><span
+																	class="blind">올림차순</span></a>
+															<a href="#" class="tab_arrud ml5"><i
+																	class="ri-arrow-down-s-fill"></i><span
+																	class="blind">내림차순</span></a>
+														</div>
+													</div>
+												</th>
+												<th scope="col">
+													<div class="th-inner">
+														<span class="th-label">전체차</span>
+														<div>
+															<a href="#" class="tab_arrud"><i
+																	class="ri-arrow-up-s-fill"></i><span
+																	class="blind">올림차순</span></a>
+															<a href="#" class="tab_arrud ml5"><i
+																	class="ri-arrow-down-s-fill"></i><span
+																	class="blind">내림차순</span></a>
+														</div>
+													</div>
+												</th>
+												<th scope="col">
+													<div class="th-inner">
+														<span class="th-label">노출차</span>
+														<div>
+															<a href="#" class="tab_arrud"><i
+																	class="ri-arrow-up-s-fill"></i><span
+																	class="blind">올림차순</span></a>
+															<a href="#" class="tab_arrud ml5"><i
+																	class="ri-arrow-down-s-fill"></i><span
+																	class="blind">내림차순</span></a>
+														</div>
+													</div>
+												</th>
+												<th scope="col">
+													<div class="th-inner">
+														<span class="th-label">비노출</span>
+														<div>
+															<a href="#" class="tab_arrud"><i
+																	class="ri-arrow-up-s-fill"></i><span
+																	class="blind">올림차순</span></a>
+															<a href="#" class="tab_arrud ml5"><i
+																	class="ri-arrow-down-s-fill"></i><span
+																	class="blind">내림차순</span></a>
+														</div>
+													</div>
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<th scope="row">우리말샘<br>(국립국어원)</th>
+												<td class="col-data">592,813</td>
+												<td class="col-data">592,196</td>
+												<td class="col-data">617</td>
+												<td class="col-data">592,814</td>
+												<td class="col-data">592,196</td>
+												<td class="col-data">617</td>
+												<td class="col-data diff-cell">2,556,475</td>
+												<td class="col-data diff-text">-1</td>
+												<td class="col-data">0</td>
+											</tr>
+
+											<tr>
+												<th scope="row">표준 용어 사전<br>(국가기술표준원)</th>
+												<td class="col-data">592,813</td>
+												<td class="col-data">592,196</td>
+												<td class="col-data">617</td>
+												<td class="col-data">592,814</td>
+												<td class="col-data">592,196</td>
+												<td class="col-data">600</td>
+												<td class="col-data diff-cell">2,556,475</td>
+												<td class="col-data diff-text">-1</td>
+												<td class="col-data">0</td>
+											</tr>
+
+											<tr>
+												<th scope="row">21세기 세종 계획 전문 용어<br>(국립국어원)</th>
+												<td class="col-data">592,813</td>
+												<td class="col-data">592,196</td>
+												<td class="col-data">617</td>
+												<td class="col-data">592,814</td>
+												<td class="col-data">592,196</td>
+												<td class="col-data">617</td>
+												<td class="col-data diff-cell">2,556,475</td>
+												<td class="col-data diff-text">-1</td>
+												<td class="col-data">0</td>
+											</tr>
+
+											<tr>
+												<th scope="row">농업 용어 사전<br>(농촌진흥청)</th>
+												<td class="col-data">592,813</td>
+												<td class="col-data">592,196</td>
+												<td class="col-data">617</td>
+												<td class="col-data">592,814</td>
+												<td class="col-data">592,196</td>
+												<td class="col-data">617</td>
+												<td class="col-data diff-cell">2,556,475</td>
+												<td class="col-data diff-text">-1</td>
+												<td class="col-data">0</td>
+											</tr>
+
+											<tr>
+												<th scope="row">한국민족문화대백과사전<br>(한국학중앙연구원)</th>
+												<td class="col-data">592,813</td>
+												<td class="col-data">592,196</td>
+												<td class="col-data">617</td>
+												<td class="col-data">592,814</td>
+												<td class="col-data">592,196</td>
+												<td class="col-data">617</td>
+												<td class="col-data diff-cell">2,556,475</td>
+												<td class="col-data diff-text">-1</td>
+												<td class="col-data">0</td>
+											</tr>
+										</tbody>
+									</table>
+
+								</div>
+
+
+
+								<script>
+									jQuery(document).ready(function () {
+										jQuery('#includeStatusWordListScroll').containedStickyScroll();
+									});
+
+								</script>
+								<script>
+
+									$(document).ready(function () {
+										var pageIndex = '1';
+										//fnSearchOpertorTy(4);
+									});
+
+									//작업대상 용어
+									var wordStatusTrgtList = {
+										reload: function () {
+											$("#frmTrgtWord input[name='selRownum']").val('');
+											$.ajax({
+												url: "/wordStatus/getTrgtWordStatusList.do",
+												type: "post",
+												dataType: "html",
+												beforeSend: function () {
+													spin.start();
+												},
+												data: $("#frmTrgtWord").serializeJSON(),
+												success: function (data) {
+													$("#includeTrgtWordList").html(data);
+													//matchWordList.setPage(1);
+												},
+												error: function (data) {
+													alert("오류가 발생하였습니다.");
+												},
+												complete: function () {
+													spin.stop();
+												}
+											});
+										}
+										, setPage: function (page) {
+											//$("#frmTrgtWord input[name='pageIndex']").val(page);
+											wordStatusTrgtList.reload();
+										}
+										, setRows: function (rows) {
+											//$("#frmTrgtWord input[name='pageUnit']").val(rows);
+											wordStatusTrgtList.setPage(1);
+										}
+									}
+									spin.stop();
+
+
+									//작업 대상 용어 목록 페이징 버튼 클릭 시 일치어 목록 초기화 
+									function fnSearchList(pageNo) {
+										wordStatusTrgtList.setPage(pageNo);
+										$('#frmMtchWordTrgtNo').val("");
+									}
+
+									var ordColor = "";
+									function fnTrWrodList(e, f, oThis) {
+
+										//클릭시 색 변경
+										if (ordColor != "") {
+											$('.highlight').attr('class', ordColor);
+										}
+										ordColor = $('.getTrgtWord_' + e).attr('class');
+										$('.getTrgtWord_' + e).attr('class', 'highlight');
+										//
+										//검색하는 상위 용어
+										$('#frmMtchWordTrgtNo').val(e);
+										$('#frmTrgtWordNo').val($(oThis).attr("data-trgtWordNo"));
+
+										var paramList = {
+											"cdNo": e
+											, "clSystmCd": f
+											, "statusYear": $("select[name=statusYear]").val()
+											, "statusMonth": $("select[name=statusMonth]").val()
+										}
+										/* 작업자의 임시저장이나 작업 완료시 처리 */
+
+										$.ajax({
+											url: "/wordStatus/getWorkWordStatusList.do",
+											dataType: 'html',
+											type: 'POST',
+											beforeSend: function () {
+												spin.start();
+											},
+											data: paramList,
+											success: function (data) {
+												$("#includeWorkStatusWordList").html(data);
+											}, error: function (xhr, status, error) {
+												alert("오류가 발생하였습니다.");
+											},
+											complete: function () {
+												spin.stop();
+											}
+										});
+
+
+
+
+										var matchWordList = {
+											reload: function () {
+												$("#frmMatchWord input[name='selRownum']").val('');
+												$.ajax({
+													url: "/wordStatus/getWorkWordStatusList.do",
+													type: "post",
+													dataType: "html",
+													beforeSend: function () {
+														spin.start();
+													},
+													data: $("#frmMatchWord").serializeJSON(),
+													success: function (data) {
+														$("#includeWorkStatusWordList1").html(data);
+													},
+													error: function (data) {
+														alert("오류가 발생하였습니다.");
+													},
+													complete: function () {
+														spin.stop();
+													}
+
+												});
+											}
+										}
+									}
+									/**
+									 * 엔터 이벤트 모음
+									 */
+									$('#searchKeyword').keydown(function (key) {
+										if (key.keyCode == 13) {
+											$('#keywordFindBtn').trigger("click");
+										}
+									});
+
+									/***
+									 * 찾기(검색)버튼 클릭 이벤트
+									 */
+									$('#keywordFindBtn').on('click', function (e) {
+										e.preventDefault();
+										var pageIndex = '1';
+										wordStatusList.setPage(1);
+										//wordStatusTrgtList.setPage(pageIndex);
+										var statusYear = $("select[name=statusYear]").val();
+										var statusMonth = $("select[name=statusMonth]").val();
+
+									});
+
+									function fnSearchOpertorTy(operatorTy) {
+										if (operatorTy == 4) {
+											$("#ClsTxt").empty();
+											$("#ClsTxt").text("온용어 분류 체계");
+											$("#clsCd").val(4);
+											$("#clSystmCd").val(4);
+
+										} else if (operatorTy == 3) {
+											$("#ClsTxt").empty();
+											$("#ClsTxt").text("정부 기능 분류 체계(BRM)");
+											$("#clsCd").val(3);
+											$("#clSystmCd").val(3);
+										} else if (operatorTy == 2) {
+											$("#ClsTxt").empty();
+											$("#ClsTxt").text("우리말샘 전문 분야");
+											$("#clsCd").val(2);
+											$("#clSystmCd").val(2);
+										}
+										var pageIndex = '1';
+										wordStatusTrgtList.setPage(pageIndex);
+									}
+
+								</script>
+							</div>
+						</div>
+
+						<div class="tab-panel" data-panel="buildStatus" style="display:none;">
+							<div class="info_box violet">
+								<div>
+									<strong class="black1 mr30"><label for="deptList">과제</label></strong>
+									<div class="select w400">
+										<select id="deptList" name="deptNo">
+											<option value="0" data-deptty="2">2015-2019 구축_남북 전문 용어_어문연구과</option>
+										</select>
+									</div>
+								</div>
+
+								<a href="#" class="btn btnB type1">조회</a>
+							</div>
+
+							<div></div>
+						</div>
+
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+
+	</scrhttp:><deepl-input-controller translate="no"><template shadowrootmode="open">
+			<link rel="stylesheet" href="chrome-extension://cofdbpoegempjloogbagkncekinflcnj/build/content.css">
+			<div dir="ltr" style="visibility: initial !important;">
+				<div class="dl-input-translation-container svelte-95aucy">
+					<div></div>
+				</div>
+			</div>
+		</template></deepl-input-controller>
+</body>
+
+</html>

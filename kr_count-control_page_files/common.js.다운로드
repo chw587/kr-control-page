@@ -1,0 +1,1674 @@
+	jQuery.fn.serializeObject = function () {
+		var result = {};
+		let serializeArray;
+	    
+	    try{
+	        if( $(this)[0].nodeName == 'FORM'){ 
+	        	serializeArray = this.serializeArray();
+	        } else { 
+	        	serializeArray = $(this)[0].children; 
+	        }
+	    }catch(element){ 
+	    	return result; 
+	    }
+		
+		
+		jQuery.each(serializeArray, function (i, element) {
+			var node = result[element.name];
+			if (typeof node !== 'undefined' && node !== null) {
+				if (jQuery.isArray(node)) {
+					node.push(element.value.replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/,/g,'&#44;').replace(/"/g, '&quot;'));
+				} else {
+					result[element.name] = [node, element.value.replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/,/g,'&#44;').replace(/"/g, '&quot;')];
+				}
+			} else {
+				result[element.name] = element.value.replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/,/g,'&#44;').replace(/"/g, '&quot;');
+			}
+			//console.log(element.name +"="+ result[element.name]);
+		});
+		return result;
+	};
+	
+	jQuery.fn.serializeObject2 = function () {
+		let result = {};
+		let serializeArray;
+	    try{
+	        if( $(this)[0].nodeName == 'FORM'){ 
+	        	serializeArray = this.serializeArray();
+	        } else { 
+	        	serializeArray = $(this)[0].children; 
+	        }
+	    }catch(element){ 
+	    	return result; 
+	    }
+
+		jQuery.each(this.serializeArray(), function (i, element) {
+			let node = result[element.name];
+			let nodename = element.name;
+			if (typeof node !== 'undefined' && node !== null) {
+				if (jQuery.isArray(node)) {
+					node.push(element.value.replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/,/g,'&#44;').replace(/"/g, '&quot;'));
+				} else {
+					result[element.name] = [node, element.value.replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/,/g,'&#44;').replace(/"/g, '&quot;')];
+				}
+			} else {
+				result[element.name] = element.value.replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/,/g,'&#44;').replace(/"/g, '&quot;');
+			}
+			
+			console.log(element.name +"="+ result[element.name]);
+		});
+		return result;
+	};
+
+var common = {
+	
+	// 레이어 팝업
+	tabmenu : function(target){
+		var $tabBox = $(target).find('.tab_wrap')
+	},
+	
+	modalPopShow : function(obj,wid,isDraggable){
+		var layerWrap = $('.popup_container');
+		var layerBox = $('.layer_box');
+		var target = $(obj);
+		var str = '<div class="dim"></div>';
+		var z_idx = layerBox.css('z-index');
+		
+		$('html, body').css('overflow','hidden');		
+		layerWrap.css('display','block');
+
+		if(layerWrap.find('.dim').length == 0){
+			layerWrap.append(str);
+		}else{
+			$('.dim').css('z-index',z_idx+1);target.css('z-index',z_idx+2);
+		}
+
+		$('.dim').fadeIn('fast');
+		target.stop().fadeIn('fast').addClass('active');		
+		target.attr('data-focus','on');
+
+		if(wid){target.css('width',wid);}
+		common.tabmenu(obj);
+		modalPosition();
+		
+		//레이어팝업 드래그 엔 드롭
+		//$(obj).draggable();
+		if(isDraggable != undefined){
+			if(isDraggable){
+				//레이어팝업 드래그 엔 드롭
+				$(obj).draggable();
+			}
+		} else {
+			//레이어팝업 드래그 엔 드롭
+			$(obj).draggable();
+		}
+
+		function modalPosition(){
+			var winWid = $(window).outerWidth();
+			var winHei = $(window).outerHeight();
+			var head_hei = target.find('.pop_head').outerHeight();
+			var pop_cont = target.find('.pop_cont');
+			var obj_hei = target.outerHeight();
+			var obj_wid = target.outerWidth();
+			var top = (winHei - obj_hei) / 2;
+			var left = (winWid - obj_wid) / 2;
+
+			target.css({top:top,left:left});
+			target.attr('tabIndex','0');
+
+			//팝업크기가 화면보다 클때
+			if(obj_hei >= winHei){
+				target.css('top','20px');
+				layerWrap.css('overflow-y','scroll')
+			}else{
+				layerWrap.css('overflow-y','')
+			}
+			
+			if(obj =='#submitOrg'){
+				if(winHei >= 900){
+					pop_cont.find('.org_list .list_wrap').css('height',pop_cont.height()-270)
+					pop_cont.find('.org_select .list_wrap').css('height',pop_cont.height()-140)
+				}else{
+					pop_cont.find('.org_list .list_wrap').css('height','')
+					pop_cont.find('.org_select .list_wrap').css('height','')
+				}
+			}
+				
+			if(obj =='#orgGroupMdy'){
+				if(winHei >= 900){
+					pop_cont.find('.org_list').css('height',pop_cont.height()-100)
+				}else{
+					pop_cont.find('.org_list').css('height','')
+				}
+			}
+
+			if(obj == '#noteSendModal'){
+				top = window.scrollY || document.documentElement.scrollTop;
+				target.css('top',top+150);
+			}
+
+			if(obj == '#mailSendModal'){
+				top = window.scrollY || document.documentElement.scrollTop;
+				target.css('top',top+150);
+			}
+
+			if(obj == '#noteRecChoicePopup'){
+				top = window.scrollY || document.documentElement.scrollTop;
+				target.css('top', top);
+			}
+		}	
+		
+		$(window).resize(function(){
+			modalPosition();
+		})
+	},
+
+	modalExaminePopShow : function(obj,wid,isDraggable){
+		var layerWrap = $('.popup_container_examine');
+		var layerBox = $('.layer_box');
+		var target = $(obj);
+		var str = '<div class="dim"></div>';
+		var z_idx = layerBox.css('z-index');
+
+		$('html, body').css('overflow','hidden');
+		layerWrap.css('display','block');
+
+		if(layerWrap.find('.dim').length == 0){
+			layerWrap.append(str);
+		}else{
+			$('.dim').css('z-index',z_idx+1);target.css('z-index',z_idx+2);
+		}
+
+		$('.dim').fadeIn('fast');
+		target.stop().fadeIn('fast').addClass('active');
+		target.attr('data-focus','on');
+
+		if(wid){target.css('width',wid);}
+		common.tabmenu(obj);
+		modalPosition();
+
+		//레이어팝업 드래그 엔 드롭
+		//$(obj).draggable();
+		if(isDraggable != undefined){
+			if(isDraggable){
+				//레이어팝업 드래그 엔 드롭
+				$(obj).draggable();
+			}
+		} else {
+			//레이어팝업 드래그 엔 드롭
+			$(obj).draggable();
+		}
+
+		function modalPosition(){
+			var winWid = $(window).outerWidth();
+			var winHei = $(window).outerHeight();
+			var head_hei = target.find('.pop_head').outerHeight();
+			var pop_cont = target.find('.pop_cont');
+			var obj_hei = target.outerHeight();
+			var obj_wid = target.outerWidth();
+			var top = (winHei - obj_hei) / 2;
+			var left = (winWid - obj_wid) / 2;
+
+			target.css({top:top,left:left});
+			target.attr('tabIndex','0');
+
+			//팝업크기가 화면보다 클때
+			if(obj_hei >= winHei){
+				target.css('top','20px');
+				layerWrap.css('overflow-y','scroll')
+			}else{
+				layerWrap.css('overflow-y','')
+			}
+
+			if(obj =='#submitOrg'){
+				if(winHei >= 900){
+					pop_cont.find('.org_list .list_wrap').css('height',pop_cont.height()-270)
+					pop_cont.find('.org_select .list_wrap').css('height',pop_cont.height()-140)
+				}else{
+					pop_cont.find('.org_list .list_wrap').css('height','')
+					pop_cont.find('.org_select .list_wrap').css('height','')
+				}
+			}
+
+			if(obj =='#orgGroupMdy'){
+				if(winHei >= 900){
+					pop_cont.find('.org_list').css('height',pop_cont.height()-100)
+				}else{
+					pop_cont.find('.org_list').css('height','')
+				}
+			}
+
+			if(obj == '#noteSendModal'){
+				top = window.scrollY || document.documentElement.scrollTop;
+				target.css('top',top+150);
+			}
+
+			if(obj == '#mailSendModal'){
+				top = window.scrollY || document.documentElement.scrollTop;
+				target.css('top',top+150);
+			}
+
+			if(obj == '#noteRecChoicePopup'){
+				top = window.scrollY || document.documentElement.scrollTop;
+				target.css('top', top);
+			}
+		}
+
+		$(window).resize(function(){
+			modalPosition();
+		})
+	},
+
+
+	modalRelationPopShow : function(obj,wid,isDraggable){
+		var layerWrap = $('.popup_container_relation');
+		var layerBox = $('.layer_box');
+		var target = $(obj);
+		var str = '<div class="dim"></div>';
+		var z_idx = layerBox.css('z-index');
+
+		$('html, body').css('overflow','hidden');
+		layerWrap.css('display','block');
+
+		if(layerWrap.find('.dim').length == 0){
+			layerWrap.append(str);
+		}else{
+			$('.dim').css('z-index',z_idx+1);target.css('z-index',z_idx+2);
+		}
+
+		$('.dim').fadeIn('fast');
+		target.stop().fadeIn('fast').addClass('active');
+		target.attr('data-focus','on');
+
+		if(wid){target.css('width',wid);}
+		common.tabmenu(obj);
+		modalPosition();
+
+		//레이어팝업 드래그 엔 드롭
+		//$(obj).draggable();
+		if(isDraggable != undefined){
+			if(isDraggable){
+				//레이어팝업 드래그 엔 드롭
+				$(obj).draggable();
+			}
+		} else {
+			//레이어팝업 드래그 엔 드롭
+			$(obj).draggable();
+		}
+
+		function modalPosition(){
+			var winWid = $(window).outerWidth();
+			var winHei = $(window).outerHeight();
+			var head_hei = target.find('.pop_head').outerHeight();
+			var pop_cont = target.find('.pop_cont');
+			var obj_hei = target.outerHeight();
+			var obj_wid = target.outerWidth();
+			var top = (winHei - obj_hei) / 2;
+			var left = (winWid - obj_wid) / 2;
+
+			target.css({top:top,left:left});
+			target.attr('tabIndex','0');
+
+			//팝업크기가 화면보다 클때
+			if(obj_hei >= winHei){
+				target.css('top','20px');
+				layerWrap.css('overflow-y','scroll')
+			}else{
+				layerWrap.css('overflow-y','')
+			}
+
+			if(obj =='#submitOrg'){
+				if(winHei >= 900){
+					pop_cont.find('.org_list .list_wrap').css('height',pop_cont.height()-270)
+					pop_cont.find('.org_select .list_wrap').css('height',pop_cont.height()-140)
+				}else{
+					pop_cont.find('.org_list .list_wrap').css('height','')
+					pop_cont.find('.org_select .list_wrap').css('height','')
+				}
+			}
+
+			if(obj =='#orgGroupMdy'){
+				if(winHei >= 900){
+					pop_cont.find('.org_list').css('height',pop_cont.height()-100)
+				}else{
+					pop_cont.find('.org_list').css('height','')
+				}
+			}
+
+			if(obj == '#noteSendModal'){
+				top = window.scrollY || document.documentElement.scrollTop;
+				target.css('top',top+150);
+			}
+
+			if(obj == '#mailSendModal'){
+				top = window.scrollY || document.documentElement.scrollTop;
+				target.css('top',top+150);
+			}
+
+			if(obj == '#noteRecChoicePopup'){
+				top = window.scrollY || document.documentElement.scrollTop;
+				target.css('top', top);
+			}
+		}
+
+		$(window).resize(function(){
+			modalPosition();
+		})
+	},
+
+	modalEditPopShow : function(obj,wid,isDraggable){
+		var layerWrap = $('.popup_container_edit');
+		var layerBox = $('.layer_box');
+		var target = $(obj);
+		var str = '<div class="dim"></div>';
+		var z_idx = layerBox.css('z-index');
+
+		$('html, body').css('overflow','hidden');
+		layerWrap.css('display','block');
+
+		if(layerWrap.find('.dim').length == 0){
+			layerWrap.append(str);
+		}else{
+			$('.dim').css('z-index',z_idx+1);target.css('z-index',z_idx+2);
+		}
+
+		$('.dim').fadeIn('fast');
+		target.stop().fadeIn('fast').addClass('active');
+		target.attr('data-focus','on');
+
+		if(wid){target.css('width',wid);}
+		common.tabmenu(obj);
+		modalPosition();
+
+		//레이어팝업 드래그 엔 드롭
+		//$(obj).draggable();
+		if(isDraggable != undefined){
+			if(isDraggable){
+				//레이어팝업 드래그 엔 드롭
+				$(obj).draggable();
+			}
+		} else {
+			//레이어팝업 드래그 엔 드롭
+			$(obj).draggable();
+		}
+
+		function modalPosition(){
+			var winWid = $(window).outerWidth();
+			var winHei = $(window).outerHeight();
+			var head_hei = target.find('.pop_head').outerHeight();
+			var pop_cont = target.find('.pop_cont');
+			var obj_hei = target.outerHeight();
+			var obj_wid = target.outerWidth();
+			var top = (winHei - obj_hei) / 2;
+			var left = (winWid - obj_wid) / 2;
+
+			target.css({top:top,left:left});
+			target.attr('tabIndex','0');
+
+			//팝업크기가 화면보다 클때
+			if(obj_hei >= winHei){
+				target.css('top','20px');
+				layerWrap.css('overflow-y','scroll')
+			}else{
+				layerWrap.css('overflow-y','')
+			}
+
+			if(obj =='#submitOrg'){
+				if(winHei >= 900){
+					pop_cont.find('.org_list .list_wrap').css('height',pop_cont.height()-270)
+					pop_cont.find('.org_select .list_wrap').css('height',pop_cont.height()-140)
+				}else{
+					pop_cont.find('.org_list .list_wrap').css('height','')
+					pop_cont.find('.org_select .list_wrap').css('height','')
+				}
+			}
+
+			if(obj =='#orgGroupMdy'){
+				if(winHei >= 900){
+					pop_cont.find('.org_list').css('height',pop_cont.height()-100)
+				}else{
+					pop_cont.find('.org_list').css('height','')
+				}
+			}
+
+			if(obj == '#noteSendModal'){
+				top = window.scrollY || document.documentElement.scrollTop;
+				target.css('top',top+150);
+			}
+
+			if(obj == '#mailSendModal'){
+				top = window.scrollY || document.documentElement.scrollTop;
+				target.css('top',top+150);
+			}
+
+			if(obj == '#noteRecChoicePopup'){
+				top = window.scrollY || document.documentElement.scrollTop;
+				target.css('top', top);
+			}
+		}
+
+		$(window).resize(function(){
+			modalPosition();
+		})
+	},
+
+	modalPopHide : function(btn){
+		var target = btn.closest('.layer_box');
+		var obj = target.attr('id');
+		var layerWrap = $('.popup_container');
+		var num = $('.layer_box.active').length;
+
+		$('html, body').css('overflow','');
+		target.removeClass('active').css('display','none');
+
+		if(num > 1){
+			$('.dim').css('z-index','');
+		}else{ layerWrap.hide(); $('.dim').remove(); }		
+	},
+
+	modalExaminePopHide : function(btn){
+		var target = btn.closest('.layer_box');
+		var obj = target.attr('id');
+		var layerWrap = $('.popup_container_examine');
+		var num = $('.layer_box.active').length;
+
+		$('html, body').css('overflow','');
+		target.removeClass('active').css('display','none');
+
+		if(num > 1){
+			$('.dim').css('z-index','');
+		}else{ layerWrap.hide(); $('.dim').remove(); }
+	},
+
+	modalRelationPopHide : function(btn){
+		var target = btn.closest('.layer_box');
+		var obj = target.attr('id');
+		var layerWrap = $('.popup_container_relation');
+		var num = $('.layer_box.active').length;
+
+		$('html, body').css('overflow','');
+		target.removeClass('active').css('display','none');
+
+		if(num > 1){
+			$('.dim').css('z-index','');
+		}else{ layerWrap.hide(); $('.dim').remove(); }
+	},
+
+	modalEditPopHide : function(btn){
+		var target = btn.closest('.layer_box');
+		var obj = target.attr('id');
+		var layerWrap = $('.popup_container_edit');
+		var num = $('.layer_box.active').length;
+
+		$('html, body').css('overflow','');
+		target.removeClass('active').css('display','none');
+
+		if(num > 1){
+			$('.dim').css('z-index','');
+		}else{ layerWrap.hide(); $('.dim').remove(); }
+	},
+
+	modalPopAutoHide : function(target){
+		var target = $(target);
+		var layerWrap = $('.popup_container');
+		var num = $('.layer_box.active').length;
+
+		$('html, body').css('overflow','');
+		target.removeClass('active').css('display','none');
+
+		if(num > 1){
+			$('.dim').css('z-index','');
+		}else{ layerWrap.hide(); $('.dim').remove(); }		
+	}
+	
+	/* 새창으로 열기 */
+	,windowOpen : function(oThis, pageUrl, pageTitle, returnTargetId){
+		var findParams = $(oThis).data();
+		var createUniqueName;
+		if(pageTitle){
+			createUniqueName = pageTitle+'_'+date.getCurrentTime();
+			$('#'+returnTargetId+'').trigger("focus");
+		} else {
+			createUniqueName = '작업 이력 보기_'+date.getCurrentTime();
+		}
+		
+		var formObj = $('<form id="dynamicSpecialCharForm"></form>');
+		$(formObj).attr('action', pageUrl);
+		$(formObj).attr('target', createUniqueName);
+		$(formObj).attr('method', 'post');
+		$(formObj).appendTo('body');
+		$(formObj).append('<input type="hidden" name="returnTargetId" value="'+returnTargetId+'" />');
+		for(var property in findParams){
+			$(formObj).append('<input type="hidden" name="'+property+'" value="'+findParams[property]+'" />');
+		}
+		
+		window.open('', createUniqueName, 'width=1024, height=768, left=20, top=20, toolbar=no, menubar=no, scrollbars=no, resizable=yes, location=no');
+		$(formObj).submit();
+	}
+	,windowOpenToData : function(oThis, pageUrl, pageTitle){
+		var findParams = oThis;
+		var createUniqueName;
+		if(pageTitle){
+			createUniqueName = pageTitle+'_'+date.getCurrentTime();
+		} else {
+			createUniqueName = '작업 이력 보기_'+date.getCurrentTime();
+		}
+		
+		var formObj = $('<form name="" id="" ></form>');
+		$(formObj).attr('action', pageUrl);
+		$(formObj).attr('target', createUniqueName);
+		$(formObj).attr('method', 'post');
+		$(formObj).appendTo('body');
+
+		for(var property in findParams){
+			if(property == 'dfntxtCn'){
+				alert(findParams[property]);
+				$(formObj).append('<input type="input" name="'+property+'" value="'+findParams[property]+'" />');
+			}else{
+				$(formObj).append('<input type="input" name="'+property+'" value="'+findParams[property]+'" />');
+			}
+		}
+		window.open('', createUniqueName, 'width=1024, height=768, left=20, top=20, toolbar=no, menubar=no, scrollbars=no, resizable=yes, location=no');
+		$(formObj).submit();
+	}
+	
+	/* 분야선택 버튼클릭 시 UI처리 관련  */
+	,realm : {
+		trgetEvent : ''
+		,targetThis : ''
+		,targetType : ''
+		,getRealmSelectView : function(oThis, event, type){
+			this.trgetEvent = event;
+			this.targetThis = oThis;
+			this.targetType = type;
+			$.ajax({
+				url : '/common/getRealmSelectView.do'
+				,type : 'post'
+				,datType : 'json'
+				,data : {type : type}
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="selectRealmFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="selectRealmFormWrapper"></div>');
+					}
+					$('#selectRealmFormWrapper').append(resData);
+					common.modalPopShow('#realmSelectLayerPopup', '780', false);
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	
+	,realmSup : {
+		trgetEvent : ''
+		,targetThis : ''
+		,targetType : ''
+		,getRealmSelectViewSup : function(oThis, event, type){
+			this.trgetEvent = event;
+			this.targetThis = oThis;
+			this.targetType = type;
+			$.ajax({
+				url : '/common/getRealmSelectViewSup.do'
+				,type : 'post'
+				,datType : 'json'
+				,data : {type : type}
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="selectRealmFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="selectRealmFormWrapper"></div>');
+					}
+					$('#selectRealmFormWrapper').append(resData);
+					common.modalPopShow('#realmSelectLayerPopupSup', '780', false);
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	
+	/* 예시찾기 버튼 클릭 시 처리 */
+	,findExample : {
+		getSearchFormView : function(oThis){
+			$.ajax({
+				url : '/findWord/getFindExampleFormView.do'
+				,type : 'post'
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="findExampleWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="findExampleWrapper"></div>');
+					}
+					$('#findExampleWrapper').append(resData);
+					common.modalPopShow('#findExampleTabForm', '1120', false);
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+				}
+			});
+		}
+	}
+	
+	/* 멀티미디어찾기 버튼 클릭 시 처리 */
+	,findExample : {
+		getSearchFormView : function(oThis){
+			$.ajax({
+				url : '/findWord/getFindExampleFormView.do'
+				,type : 'post'
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="findExampleWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="findExampleWrapper"></div>');
+					}
+					$('#findExampleWrapper').append(resData);
+					common.modalPopShow('#findExampleTabForm', '1120', false);
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+				}
+			});
+		}
+	}
+	
+	/* 메모이력 보기 */
+	,memoHistory : {
+		getSearchFormView : function(){
+			$.ajax({
+				url : '/common/getMemoHistoryView.do'
+				,type : 'post'
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="memoHistoryFormView"></div></div>');
+					} else {
+						popupContainer.append('<div id="memoHistoryFormView"></div>');
+					}
+					$('#memoHistoryFormView').append(resData);
+					//common.modalPopShow('#findExampleTabForm','1120');
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+				}
+			});
+		}
+	}
+	
+	/* 작업 분배 */
+	,workDistribute : {
+		getFormView : function(oThis){
+			$.ajax({
+				url : '/workDist/getDistributeFormView.do'
+				,type : 'post'
+				,data : $(oThis).data()
+				,success : function(resData) {
+					
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="workDistributionWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="workDistributionWrapper"></div>');
+					}
+					$('#workDistributionWrapper').append(resData);
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+				}
+			});
+		}
+	} 
+	/* 용어 집필화면에서  중복 확인 버튼 이벤트  */
+	,overLapWord : {
+		targetThis : ''
+		,getOverLapWordSelectView : function(oThis, values){
+			this.targetThis = oThis;
+			spin.start();
+			$.ajax({
+				url : '/wordWrit/getOverlapWordListView.do'
+				,type : 'post'
+				,dataType: 'text'
+				,data :  { searchKeyword : values, }
+				,contentType: "application/x-www-form-urlencoded; charset=utf-8"
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="selectOverLapWordFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="selectOverLapWordFormWrapper"></div>');
+					}
+					$('#selectOverLapWordFormWrapper').append(resData);
+					common.modalPopShow('#overLapWordLayerPopup','900');
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					console.log(xhr);
+					console.log(ajaxOptions);
+					console.log(thrownError);
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					spin.stop();
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	
+	/* 시각화 화면에서  용어 정보 가져오기 버튼 이벤트  */
+	,findWordInfo : {
+		targetThis : ''
+		,getWordInfoSelectViewVisual : function(oThis, values){
+			this.targetThis = oThis;
+			$.ajax({
+				url : '/wordWrit/getFindWordInfoListViewVisual.do'
+				,type : 'post'
+				,dataType: 'text'
+				,data :  { searchKeyword : values, }
+				,contentType: "application/x-www-form-urlencoded; charset=utf-8"
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="findWordInfoFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="findWordInfoFormWrapper"></div>');
+					}
+					$('#findWordInfoFormWrapper').append(resData);
+					common.modalPopShow('#findWordInfoLayerPopup','900');
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					console.log(xhr);
+					console.log(ajaxOptions);
+					console.log(thrownError);
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	/* 집필 화면에서  용어 정보 가져오기 버튼 이벤트  */
+	,findWordInfo : {
+		targetThis : ''
+		,getWordInfoSelectView : function(oThis, values){
+			this.targetThis = oThis;
+			$.ajax({
+				url : '/wordWrit/getFindWordInfoListView.do'
+				,type : 'post'
+				,dataType: 'text'
+				,data :  { searchKeyword : values, }
+				,contentType: "application/x-www-form-urlencoded; charset=utf-8"
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="findWordInfoFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="findWordInfoFormWrapper"></div>');
+					}
+					$('#findWordInfoFormWrapper').append(resData);
+					common.modalPopShow('#findWordInfoLayerPopup','900');
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					console.log(xhr);
+					console.log(ajaxOptions);
+					console.log(thrownError);
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	
+	/* 관련 용어 정보 가져오기 버튼 이벤트  */
+	,wordWritView : {
+		targetThis : ''
+		,getRelateWordInfo : function(oThis, values){
+			this.targetThis = oThis;
+			$.ajax({
+				url : '/wordWrit/getRelateWordInfoView.do'
+				,type : 'post'
+				,dataType: 'text'
+				,data :  { trgtWordNo : values, }
+				,contentType: "application/x-www-form-urlencoded; charset=utf-8"
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="relationWordInfoFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="relationWordInfoFormWrapper"></div>');
+					}
+					$('#relationWordInfoFormWrapper').append(resData);
+					common.modalPopShow('#relationWordInfo','900');
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					console.log(xhr);
+					console.log(ajaxOptions);
+					console.log(thrownError);
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	
+	
+	/* 작업 분배 버튼 이벤트  */
+	,wordWritListDistribution : {
+		targetThis : ''
+		,getWorkDistribution : function(oThis, values){
+			this.targetThis = oThis;
+			$.ajax({
+				url : '/wordWrit/getWorkDistributionView.do'
+				,type : 'post'
+				,dataType: 'text'
+				,data :  values
+				,contentType: "application/x-www-form-urlencoded; charset=utf-8"
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="workDistributionFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="workDistributionFormWrapper"></div>');
+					}
+					$('#workDistributionFormWrapper').append(resData);
+					common.modalPopShow('#workDistribution','780');
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					console.log(xhr);
+					console.log(ajaxOptions);
+					console.log(thrownError);
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	
+	/* 로그보기 버튼 이벤트  */
+	,apiLogSnipet : {
+		targetThis : ''
+		,getApiLogSnipet : function(oThis, values){
+			this.targetThis = oThis;
+			$.ajax({
+				url : '/wordWrit/getLogApiSnipetView.do'
+				,type : 'post'
+				,dataType: 'text'
+				,data :  values
+				,contentType: "application/x-www-form-urlencoded; charset=utf-8"
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="workDistributionFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="workDistributionFormWrapper"></div>');
+					}
+					$('#workDistributionFormWrapper').append(resData);
+					common.modalPopShow('#workDistribution','780');
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					console.log(xhr);
+					console.log(ajaxOptions);
+					console.log(thrownError);
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	
+	/* 용어 올리기 */
+	,trgtWordUpload : {
+		targetThis : ''
+		,getUploadFormFormView : function(oThis){
+			$.ajax({
+				url : '/wordUpload/getTrgtWordUploadFormView.do'
+				,type : 'post'
+				,data : $(oThis).data()
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="trgtWordExcelFileUpload"></div></div>');
+					} else {
+						popupContainer.append('<div id="trgtWordExcelFileUpload"></div>');
+					}
+					$('#trgtWordExcelFileUpload').append(resData);
+					common.modalPopShow('#trgtWordExcelFileUploadWrapper','780', false)
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+				}
+			});
+		}
+	}
+	/* 용어 내려받기 */
+	,trgtWordDownload : {
+		targetThis : ''
+		,getDownloadFormView : function(oThis, selectListUrl, searchConditionFormId){
+			var downloadWordCnt = $('#selectedWordCnt').val();
+			downloadWordCnt = downloadWordCnt.split(',').join();
+			var searchParams = $('#searchParams').val();
+			//alert(searchParams);
+			if(downloadWordCnt <= 0){
+				alert('내려받을 용어를 확인할 수 없습니다.');
+				return false;
+			}
+			
+			if(downloadWordCnt > 300000){
+				alert('최대 30만건(임시)까지만 내려받을 수 있습니다.');
+				return false;
+			}
+
+			spin.start();
+			$.ajax({
+				url : '/wordDownload/getTrgtWordDownloadFormView.do'
+				,type : 'post'
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="trgtWordExcelFileDownload"></div></div>');
+					} else {
+						popupContainer.append('<div id="trgtWordExcelFileDownload"></div>');
+					}
+					$('#trgtWordExcelFileDownload').append(resData);
+					$('#trgtWordExcelFileDownload').append('<input type="hidden" name="downloadWordFormId" value="'+searchConditionFormId+'" />');
+					$('#trgtWordExcelFileDownload').append('<input type="hidden" name="downloadWordSelectUrl" value="'+selectListUrl+'" />');
+					$('#trgtWordExcelFileDownload').append('<input type="hidden" name="downloadWordCnt" value="'+downloadWordCnt+'" />');
+					$('#trgtWordExcelFileDownload').append('<input type="hidden" name="searchParams" value="'+searchParams+'" />');
+					
+					common.modalPopShow('#trgtWordExcelFileDownloadWrapper','780', false);
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					alert(xhr.status);
+				}
+				,complete : function(){
+					spin.stop();
+				}
+			});
+			/*
+			spin.start();
+			
+			setTimeout(function(){
+				$.ajax({
+					url : selectListUrl
+					,type : 'post'
+					,data : $('#'+searchConditionFormId).serializeJSON()
+					,success : function(resData) {
+						if(resData != ''){
+							$('#downloadTrgtWordsNo').val(resData);
+							$('#loadingMessage').hide();
+							$('#columnCheckView').show();
+							$('#executeDownloadBtn').attr('onclick', 'excelFileDownload(this);');
+						}
+					}
+					,error: function (xhr, ajaxOptions, thrownError) {
+						alert("오류가 발생하였습니다.");
+					}
+					,complete : function(){
+					}
+				});
+			}, 500);
+			
+			//처리해야 할 용어번호가 정상적으로 확인되면 팝업창 띄워줌.
+			$.ajax({
+				url : '/wordDownload/getTrgtWordDownloadFormView.do'
+				,type : 'post'
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="trgtWordExcelFileDownload"></div></div>');
+					} else {
+						popupContainer.append('<div id="trgtWordExcelFileDownload"></div>');
+					}
+					$('#trgtWordExcelFileDownload').append(resData);
+					common.modalPopShow('#trgtWordExcelFileDownloadWrapper','780', false);
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					alert(xhr.status);
+					console.log(thrownError);
+				}
+				,complete : function(){
+					spin.stop();
+				}
+			});
+			*/
+		}
+		,executeFileCreateDaemon : function(dwldNo){
+			$.ajax({
+				url : '/wordDownload/executeFileCreateDaemon.do'
+				,type : 'post'
+				,data : {
+					dwldNo : dwldNo
+				}
+				,success : function(resData) {
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+				}
+				,complete : function(){
+				}
+			});
+		}
+	}
+	/* 온톨로지 결과 내려받기 */
+	,ontologyDownload : {
+		targetThis : ''
+	  , getDownloadFormView : function(form, oThis){
+			var downloadWordCnt = $('#downloadCnt').val();
+			spin.start();
+			$.ajax({
+				url : '/ontology/getDownloadFormView.do'
+				,type : 'post'
+				,data : form
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container_examine');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container_examine"><div id="ontologyExcelFileDownload"></div></div>');
+					} else {
+						popupContainer.append('<div id="ontologyExcelFileDownload"></div>');
+					}
+					$('#ontologyExcelFileDownload').append(resData);
+					$('#ontologyExcelFileDownload').append('<input type="hidden" name="downloadWordCnt" value="'+downloadWordCnt+'" />');
+					common.modalExaminePopShow('#ontologyExcelFileDownloadWrapper','780', false);
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					alert(xhr.status);
+				}
+				,complete : function(){
+					spin.stop();
+				}
+			});
+		}
+		,executeFileCreateDaemon : function(dwldNo){
+			$.ajax({
+				url : '/ontology/executeFileCreateDaemon.do'
+				,type : 'post'
+				,data : {
+					dwldNo : dwldNo
+				}
+				,success : function(resData) {
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+				}
+				,complete : function(){
+				}
+			});
+		}
+	}
+	/* 멀티미디어 정보 가져오기 버튼 이벤트  */
+	,findMultiMedia : {
+		targetThis : ''
+		,getFindMultiMediaFormView : function(oThis){
+			$.ajax({
+				url : '/findWord/getFindMultiMediaFormView.do'
+				,type : 'post'
+				,data : {
+					seq : oThis
+					,trgtWordNo : $('#contents').find('form:first').find('input[name="trgtWordNo"]').val()
+				}
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="relationWordFindWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="relationWordFindWrapper"></div>');
+					}
+					$('#relationWordFindWrapper').append(resData);
+					common.modalPopShow('#relationWordFind','1120', false)
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+				}
+			});
+		}
+	}
+	
+	/* 시각화 용어 정보 가져오기 버튼 이벤트  */
+	,findVisualWord : {
+		targetThis : ''
+		,getFindVisualWordFormView : function(oThis){
+			$.ajax({
+				url : '/findWord/getFindVisualWordFormView.do'
+				,type : 'post'
+				,data : {
+					seq : oThis
+					,trgtWordNo : $('#contents').find('form:first').find('input[name="trgtWordNo"]').val()
+				}
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="relationWordFindWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="relationWordFindWrapper"></div>');
+					}
+					$('#relationWordFindWrapper').append(resData);
+					common.modalPopShow('#relationWordFind','1120', false)
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+				}
+			});
+		}
+	}
+	/* 관련 용어 찾기 */
+
+	,findRelateWord : {
+		targetThis : ''
+		,getFindRelateWordFormView : function(oThis){
+			$.ajax({
+				url : '/findWord/getFindRelateWordFormView.do'
+				,type : 'post'
+				,data : {
+					seq : oThis
+					,trgtWordNo : $('#contents').find('form:first').find('input[name="trgtWordNo"]').val()
+				}
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="relationWordFindWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="relationWordFindWrapper"></div>');
+					}
+					$('#relationWordFindWrapper').append(resData);
+					common.modalPopShow('#relationWordFind','1120', false)
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+				}
+			});
+		}
+	}
+	
+	
+	/* 작업자 변경 버튼 이벤트  */
+	,wordWritWorkerChangeList : {
+		targetThis : ''
+		,getWorkerChange : function(oThis, values){
+			this.targetThis = oThis;
+			$.ajax({
+				url : '/wordWrit/getWorkerChangeListView.do'
+				,type : 'post'
+				,dataType: 'text'
+				,data :  values
+				,contentType: "application/x-www-form-urlencoded; charset=utf-8"
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="workerChangeFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="workerChangeFormWrapper"></div>');
+					}
+					$('#workerChangeFormWrapper').append(resData);
+					common.modalPopShow('#workerChange','780');
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					console.log(xhr);
+					console.log(ajaxOptions);
+					console.log(thrownError);
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	/* 작업자 변경 버튼 이벤트  */
+	,wordWritWorkerChangeListM : {
+		targetThis : ''
+		,getWorkerChange : function(oThis, values){
+			this.targetThis = oThis;
+			$.ajax({
+				url : '/matchWordWrit/getWorkerChangeListView.do'
+				,type : 'post'
+				,dataType: 'text'
+				,data :  values
+				,contentType: "application/x-www-form-urlencoded; charset=utf-8"
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="workerChangeFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="workerChangeFormWrapper"></div>');
+					}
+					$('#workerChangeFormWrapper').append(resData);
+					common.modalPopShow('#workerChange','780');
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					console.log(xhr);
+					console.log(ajaxOptions);
+					console.log(thrownError);
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	
+	/* 용어 일괄삭제 버튼 이벤트  */
+	,wordWritWordDelList : {
+		targetThis : ''
+		,getWordDelete : function(oThis, values){
+			this.targetThis = oThis;
+			$.ajax({
+				url : '/wordWrit/getWordDeleteListView.do'
+				,type : 'post'
+				,dataType: 'text'
+				,data :  values
+				,contentType: "application/x-www-form-urlencoded; charset=utf-8"
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="wordDeleteFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="wordDeleteFormWrapper"></div>');
+					}
+					$('#wordDeleteFormWrapper').append(resData);
+					common.modalPopShow('#wordDelete','780');
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					console.log(xhr);
+					console.log(ajaxOptions);
+					console.log(thrownError);
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	
+	/* 용어 일괄상태변경 버튼 이벤트  */
+	,wordWritWordStatusList : {
+		targetThis : ''
+		,getWordStatus : function(oThis, values){
+			this.targetThis = oThis;
+			$.ajax({
+				url : '/wordWrit/getWordStatusListView.do'
+				,type : 'post'
+				,dataType: 'text'
+				,data :  values
+				,contentType: "application/x-www-form-urlencoded; charset=utf-8"
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="wordStatusFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="wordStatusFormWrapper"></div>');
+					}
+					$('#wordStatusFormWrapper').append(resData);
+					common.modalPopShow('#wordStatus','780');
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					console.log(xhr);
+					console.log(ajaxOptions);
+					console.log(thrownError);
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	
+	
+	/* 다중메모 등록 버튼 이벤트  */
+	,multiMemoList : {
+		targetThis : ''
+		,getMultiMemoList : function(oThis, values){
+			this.targetThis = oThis;
+			$.ajax({
+				url : '/matchWordWrit/getMultiMemoView.do'
+				,type : 'post'
+				,dataType: 'text'
+				,data :  values
+				,contentType: "application/x-www-form-urlencoded; charset=utf-8"
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="workerChangeFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="workerChangeFormWrapper"></div>');
+					}
+					$('#workerChangeFormWrapper').append(resData);
+					common.modalPopShow('#workerChange','780');
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					console.log(xhr);
+					console.log(ajaxOptions);
+					console.log(thrownError);
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	
+	/* 작업자 변경 버튼 이벤트 - 분야분류  */
+	,wordWritWorkerChangeListRealm : {
+		targetThis : ''
+		,getWorkerChange : function(oThis, values){
+			this.targetThis = oThis;
+			$.ajax({
+				url : '/realmClsf/getWorkerChangeListView.do'
+				,type : 'post'
+				,dataType: 'text'
+				,data :  values
+				,contentType: "application/x-www-form-urlencoded; charset=utf-8"
+				,success : function(resData) {
+					var popupContainer = $(document).find('div.popup_container');
+					if($(popupContainer).size() <= 0){
+						$(oThis).closest('form').after('<div id="dynamicPopupContainer" class="popup_container"><div id="workerChangeFormWrapper"></div></div>');
+					} else {
+						popupContainer.append('<div id="workerChangeFormWrapper"></div>');
+					}
+					$('#workerChangeFormWrapper').append(resData);
+					common.modalPopShow('#workerChange','900');
+				}
+				,error: function (xhr, ajaxOptions, thrownError) {
+					console.log(xhr);
+					console.log(ajaxOptions);
+					console.log(thrownError);
+					alert("오류가 발생하였습니다.");
+				}
+				,complete : function(){
+					initBranchSelect();
+				}
+			});
+		}
+	}
+	/* 주어진 문장안에 특수기호 관련 태그를 webfont로 사용하도록 태그 변경 */
+	,getConvertWebFont(str){
+		if(str != undefined && str.length > 0) {
+			if(str.indexOf("&lt;equ&gt;") > -1) {
+				str = str.replace(/&lt;equ&gt;/g, "<equ>").replace(/&lt;sh;equ&gt;/g, "</equ>").replace(/&amp;/g, "&");
+				str = str.replace(/&lt;hanja&gt;/g, "<hanja>").replace(/&lt;sh;hanja&gt;/g, "</hanja>").replace(/&amp;/g, "&");
+			}
+			str = str.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+		}
+		str = str.replace(/<equ>/ig, '<span class="korean-webfont">').replace(/<\/equ>/ig, '</span>');
+		return str;
+	}
+};
+
+
+//분야선택
+function initBranchSelect() {
+    var branchSelect = $(".branch_select");
+    var bsList = branchSelect.find(".bs_list");
+    var allSelect = bsList.find("p.all_select>span.checkbox>input[type='checkbox']");
+    var bsDeps1 = bsList.find(">ul>li");
+    var bsDeps2 = bsDeps1.find("ul>li");
+    
+    bsDeps1.find("button").on("click",function() {
+        if($(this).hasClass("active") == false) {
+            $(this).addClass("active")
+            $(this).next().show();
+        } else if($(this).hasClass("active") == true) {
+            $(this).removeClass("active")
+            $(this).next().hide();
+        }
+    })
+    
+    allSelect.on("click",function() {
+        if($(this).is(":checked") == true) {
+            bsList.find("span.checkbox>input[type='checkbox']").prop("checked",true);
+        } else {
+            bsList.find("span.checkbox>input[type='checkbox']").prop("checked",false);
+        }
+    })
+    
+    bsDeps1.find("span.checkbox input[type='checkbox']").on("change",function() {
+        if($(this).is(":checked") == true) {
+            $(this).parent().parent().find("ul>li>span.checkbox>input[type='checkbox']").prop("checked",true);
+        } else {
+            $(this).parent().parent().find("ul>li>span.checkbox>input[type='checkbox']").prop("checked",false);
+            allSelect.prop("checked",false);
+        }
+    })
+    
+    bsDeps2.find("span.checkbox input[type='checkbox']").on("change",function() {
+        if($(this).is(":checked") == false) {
+            $(this).parent().parent().parent().parent().find(">span.checkbox input[type='checkbox']").prop("checked",false);
+            allSelect.prop("checked",false);
+        }
+    })
+}
+
+//Row 추가, 삭제, 정렬
+
+var sequence = 10000;
+
+//Clone메소드 사용시 select,textarea 기존값 그대로 복제될 수 있도록 하기 위해서 추가.
+(function (original){ 
+  jQuery.fn.cloneData = function () { 
+      var result           = original.apply(this, arguments), 
+          my_textareas     = this.find('textarea').add(this.filter('textarea')), 
+          result_textareas = result.find('textarea').add(result.filter('textarea')), 
+          my_selects       = this.find('select').add(this.filter('select')), 
+          result_selects   = result.find('select').add(result.filter('select')); 
+           
+      for (var i = 0, l = my_textareas.length; i < l; ++i) $(result_textareas[i]).val($(my_textareas[i]).val()); 
+      for (var i = 0, l = my_selects.length;   i < l; ++i) { 
+          for (var j = 0, m = my_selects[i].options.length; j < m; ++j) {
+              if (my_selects[i].options[j].selected === true) {
+                  result_selects[i].options[j].selected = true; 
+              } 
+           } 
+      } 
+      return result; 
+  }; 
+})(jQuery.fn.clone); 
+
+//추가 단독
+function fnLastRowAdd(keyName){
+	$("#"+keyName+"Box").append($("#"+keyName+"Template").render({sequence : sequence++}));
+}
+
+//추가(중간)
+function fnMiddleRowAdd(keyName, seq){
+	sequence++;
+	if(seq == sequence){
+		sequence++;
+	}
+	$("#"+keyName+"Row"+seq).after($("#"+keyName+"Template").render({sequence : sequence}));
+}
+function fnMiddleRowAdd_Relate(keyName, seq){
+	sequence++;
+	if(seq == sequence){
+		sequence++;
+	}
+	$("#"+keyName+"Row"+seq).after($("#"+keyName+"Template").render({sequence : sequence}));
+}
+
+//추가(중간)
+function fnMiddleRowAdd2(keyName, seq){
+	sequence++;
+	if(seq == sequence){
+		sequence++;
+	}
+	$("#"+keyName+"Row"+seq).after($("#"+keyName+"Template").render({sequence : sequence}));
+	return sequence-1;
+}
+
+//추가(중간) 최대 개수
+function fnMiddleRowAddMaxSize(keyName, seq, maxSize){
+	var objTop = $("#"+keyName+"Row"+seq).closest(".addDel_area");
+	
+	if($(objTop).find("dd").length > maxSize-1 ){
+			alert("최대 "+maxSize+"개까지 가능합니다.");
+			return false;
+	}
+	
+	sequence++;
+	if(seq == sequence){
+		sequence++;
+	}
+	$("#"+keyName+"Row"+seq).after($("#"+keyName+"Template").render({sequence : sequence}));
+}
+
+//추가(참고사항)
+function fnMiddleRowAddRefer(keyName, seq){
+	var no = sequence;
+	
+	sequence++;
+	if(seq == sequence){
+		sequence++;
+	}
+	
+	$("#"+keyName+"Row"+seq).after($("#"+keyName+"Template").render({sequence : sequence}));
+	
+	var year_estbs = $("#refer_matter_cl"+seq).find("option:selected").data("year");
+	if(year_estbs == "Y") {
+		$("#refer_matter_year"+no).attr("data-type", "Y");
+		$("#refer_matter_year_box"+no).css("display", "");
+	}else {
+		$("#refer_matter_year"+no).attr("data-type", "");
+		$("#refer_matter_year_box"+no).css("display", "none");
+	}
+}
+
+//삭제(지정)
+function fnRowDelete(keyName, seq){
+	
+	var rowCount = $("#"+keyName+"Box").children().size();
+	
+	if(rowCount > 1){
+		$("#"+keyName+"Row"+seq).remove();
+/*		var mode = $("#"+keyName+"Row"+seq).find("input[name="+keyName+"Mode]").val();
+	    if(mode == 'U'){
+	    	$("#"+keyName+"Row"+seq).hide();
+	    	$("#"+keyName+"Row"+seq).find("input[name="+keyName+"Mode]").val("D");
+	    }else{
+	    	$("#"+keyName+"Row"+seq).remove();
+	    }*/
+	}
+}
+
+//정렬(위)
+function fnSortUp(keyName, seq){
+	var o  = $("#"+keyName+"Row"+seq);
+	//alert(o);
+	//최상위 여부 판단(데이타 형식 비교)
+    if(o.prev().get(0) !== undefined){
+        //순서 이동시 이전값을 유지하기 위해서
+    	o.find("input[name$=Prev]").each(function(){
+    		var name = $(this).attr("name");
+    		
+    		var o_value = $(this).val();
+    		var o_pre_value = o.prev().find("input[name="+name+"]").val(); 
+    		
+    		$(this).val(o_pre_value);
+    		o.prev().find("input[name="+name+"]").val(o_value);
+    	});
+    	
+    	o.find("textarea[name$=Prev]").each(function(){
+    		var name = $(this).attr("name");
+    		
+    		var o_value = $(this).val();
+    		var o_pre_value = o.prev().find("textarea[name="+name+"]").val(); 
+    		
+    		$(this).val(o_pre_value);
+    		o.prev().find("textarea[name="+name+"]").val(o_value);
+    	});
+
+    	o.cloneData(true).attr("id","changeData").insertBefore(o.prev());
+    	
+        $("#"+keyName+"Row"+seq).remove();
+        
+        $("#changeData").attr("id",keyName+"Row"+seq);
+    }
+}
+
+//정렬(아래)
+function fnSortDown(keyName, seq){
+	var o = $("#"+keyName+"Row"+seq);
+  
+	//최하위 여부 판단(데이타 형식 비교)
+    if(o.next().get(0) !== undefined){
+    	//순서 이동시 이전값을 유지하기 위해서
+    	o.find("input[name$=Prev]").each(function(){
+    		
+    		var name = $(this).attr("name");
+			
+			var o_value = $(this).val();
+			var o_next_value = o.prev().find("input[name="+name+"]").val(); 
+			
+			$(this).val(o_next_value);
+			o.next().find("input[name="+name+"]").val(o_value);
+    	});
+    	
+    	o.find("textarea[name$=Prev]").each(function(){
+    		
+    		var name = $(this).attr("name");
+			
+			var o_value = $(this).val();
+			var o_next_value = o.prev().find("textarea[name="+name+"]").val(); 
+			
+			$(this).val(o_next_value);
+			o.next().find("textarea[name="+name+"]").val(o_value);
+    	});
+
+    	o.cloneData(true).attr("id","changeData").insertAfter(o.next());
+        
+    	$("#"+keyName+"Row"+seq).remove();
+        
+    	$("#changeData").attr("id",keyName+"Row"+seq);
+    }
+}
+
+
+$(document).ready(function(){
+	// 레이어팝업 닫기
+	$('.layer_box .btn_close, .layer_box .layer_close').click(function(){
+		common.modalPopHide($(this));
+	})
+	
+});//End Of $(document).ready
+
+// 레이어팝업 닫으면 검색 초기화
+function resetSearchFields(option) {
+	document.getElementById('searchKeyword').value = "";
+	document.getElementById('searchCondition').value = option;
+}

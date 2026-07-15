@@ -1,0 +1,54 @@
+@charset "UTF-8";
+
+
+@font-face {
+  font-family: 'NanumBarunGothic';
+  font-style: normal;
+  font-weight: normal;
+    src: url(fonts/NanumBarunGothic-YetHangul.eot);
+    src: url(fonts/NanumBarunGothic-YetHangul.woff) format('woff'),
+    url(fonts/NanumBarunGothic-YetHangul.ttf) format('truetype');
+    url(fonts/NanumBarunGothic-YetHangul.ttf) format('truetype');
+}
+/* 옛한글폰트 적용 전 나눔바른고딕 폰트 적용
+@font-face {
+    font-family: 'NanumBarunGothic';
+    font-style: normal;
+    font-weight: normal;
+    src: url(fonts/NanumBarunGothic.eot);
+    src: url(fonts/NanumBarunGothic.woff2) format('woff2'),
+         url(fonts/NanumBarunGothic.woff) format('woff'),
+         url(fonts/NanumBarunGothic.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'NanumBarunGothic';
+  font-style: normal;
+  font-weight: 300;
+  src: url(fonts/NanumBarunGothicLight.eot);
+  src: url(fonts/NanumBarunGothicLight.woff2) format('woff2'),
+       url(fonts/NanumBarunGothicLight.woff) format('woff'),
+       url(fonts/NanumBarunGothicLight.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'NanumBarunGothic';
+  font-style: normal;
+  font-weight: 700;
+  src: url(fonts/NanumBarunGothicBold.eot);
+  src: url(fonts/NanumBarunGothicBold.woff2) format('woff2'),
+       url(fonts/NanumBarunGothicBold.woff) format('woff'),
+       url(fonts/NanumBarunGothicBold.ttf) format('truetype');
+}
+*/
+
+@font-face {
+	font-family: "korean-webfont";
+	font-style: normal;
+	font-weight: normal;
+	src: url("fonts/korean_dic.eot"); /* IE */
+	src: local("국어사전비표준문자"), url("fonts/korean_dic.ttf") format("truetype"), url("fonts/korean_dic.eot");
+}
+
+span.korean-webfont {
+	font-size: 13px;
+	font-family: korean-webfont;
+}

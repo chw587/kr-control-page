@@ -1,0 +1,120 @@
+/* ==========================================================================
+   kr_Statistic
+   ========================================================================== */
+
+/* ---------- Font ---------- */
+@font-face {
+    font-family: "remixicon";
+    src: url("../fonts/remixicon.woff2?t=1590207869815") format("woff2");
+    font-display: swap;
+}
+
+
+/* ---------- 공통 ---------- */
+.kr_Statistic .select select {
+    background: #fff url("../images/bullet_select.svg") no-repeat right 12px center !important;
+}
+
+.kr_Statistic .tab_arrud i {
+    font-family: "remixicon" !important;
+}
+
+
+/* ---------- 검색 조건 영역 (info_box) ---------- */
+.kr_Statistic .info_box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 30px !important;
+}
+
+
+/* ---------- 테이블 타이틀 영역 (table_title_wrap) ---------- */
+.kr_Statistic .table_title_wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.kr_Statistic .table_title_wrap .m_tit {
+    margin-bottom: 0px;
+}
+
+.kr_Statistic .table_title_wrap .count-wrap,
+.kr_Statistic .table_title_wrap .count-wrap > div {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.kr_Statistic .table_title_wrap .count-wrap > div {
+    width: auto;
+    height: 40px;
+    line-height: 38px;
+    padding: 0 15px;
+    border-radius: 5px;
+    font-size: 15px;
+    vertical-align: middle;
+}
+
+
+/* ==========================================================================
+   << 용어집별 자료현황 >>
+   ========================================================================== */
+
+/* ---------- 시스템 구분 색상 (구축/온용어) ---------- */
+.kr_Statistic .count-wrap .build-system,
+.kr_Statistic .table_wrap th.build-system {
+    background-color: orange;
+}
+
+.kr_Statistic .count-wrap .online-system,
+.kr_Statistic .table_wrap th.online-system {
+    background-color: skyblue;
+}
+
+
+/* ---------- 테이블 공통 ---------- */
+.table_wrap th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table_wrap tr:first-child span {
+    font-size: 14px;
+    color: #666;
+}
+
+.table_wrap table .col-term {
+    width: 190px;
+}
+
+.table_wrap colgroup col:nth-child(4),
+.table_wrap colgroup col:nth-child(7) {
+    border-right: 1px solid #ccc;
+}
+
+
+/* ---------- 정렬 버튼 wrapper ---------- */
+.th-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+
+/* ---------- 차이값 색상 (증감) ---------- */
+.table_wrap table td.red {
+    font-weight: bold;
+}
+
+.table_wrap table td.green {
+    font-weight: bold;
+    color: #13aa13;
+}
+
+
+/* ==========================================================================
+   << 구축통계 >>
+   ========================================================================== */
