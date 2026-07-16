@@ -54,6 +54,7 @@
     padding: 0 15px;
     border-radius: 5px;
     font-size: 15px;
+    color: #111;
     vertical-align: middle;
 }
 
@@ -70,7 +71,7 @@
 
 .badge-count.violet {
     background-color: #e0aaff !important;
-    color: #240046 !important;
+    color: #44498d !important;
 }
 
 .badge-count.blue {
@@ -211,7 +212,7 @@
 
 .table_wrap colgroup col:nth-child(4),
 .table_wrap colgroup col:nth-child(7) {
-    border-right: 1px solid #ccc;
+    border-right: 1px solid #E9E9E9;
 }
 
 
@@ -242,14 +243,21 @@
 /* ---------- build-count-wrap ---------- */
 .kr_Statistic .build-count-wrap {
     display: flex;
-    gap: 24px;
+    padding: 20px 0px;
 }
 
 .kr_Statistic .build-count-wrap .rate-card {
     width: calc(100% / 3);
-    background-color: #f1f1f1;
-    border-radius: 5px;
     padding: 16px 20px;
+        border-right: 1px solid #E9E9E9;
+}
+
+.kr_Statistic .build-count-wrap .rate-card:last-child {
+    border: none;
+}
+
+.kr_Statistic .build-count-wrap .rate-card > * {
+    text-align: center;
 }
 
 .rate-label {
@@ -257,9 +265,7 @@
 }
 
 .rate-value {
-    color: #333;
-    text-align: right;
-    margin-top: 8px;
+    margin: 0px !important;
 }
 
 
@@ -279,7 +285,7 @@
 }
 
 .kr_Statistic .build-Group-wrap > div .stats_board > * {
-    padding: 10px 30px;
+    padding: 20px 30px;
 }
 
 .kr_Statistic .build-Group-wrap > div .stats_board p {
@@ -311,4 +317,138 @@
 .kr_Statistic .build-total-wrap .stats_board .gauge {
     display: flex;
     height: 20px;
+}
+
+/* 2026-07-16: Match the saved statistics page font to the original service page. */
+html body .kr_Statistic,
+html body .kr_Statistic a,
+html body .kr_Statistic button,
+html body .kr_Statistic input,
+html body .kr_Statistic label,
+html body .kr_Statistic option,
+html body .kr_Statistic select,
+html body .kr_Statistic table,
+html body .kr_Statistic textarea,
+html body .kr_Statistic .select2-container,
+html body .kr_Statistic .select2-container * {
+    font-family: "NanumBarunGothic", "Apple Gothic", "Malgun Gothic", Dotum, sans-serif !important;
+    letter-spacing: -0.4px;
+}
+
+/* 2026-07-16: Keep remixicon glyphs from inheriting the text font override. */
+.kr_Statistic i[class^="ri-"],
+.kr_Statistic i[class*=" ri-"],
+.kr_Statistic .tab_arrud i {
+    font-family: "remixicon" !important;
+}
+
+/* 2026-07-16: Task select inserted in the wordStatus info box. */
+.kr_Statistic .info_box.violet {
+    gap: 30px;
+}
+
+.kr_Statistic .info_box.violet > .btn {
+    margin-left: auto;
+}
+
+.kr_Statistic .word-status-task-filter,
+.kr_Statistic .kr-task-select-filter-20260716 {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.kr_Statistic .word-status-task-filter .black1,
+.kr_Statistic .kr-task-select-filter-20260716 .black1 {
+    color: #111;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 40px;
+}
+
+.kr_Statistic .word-status-task-filter .select,
+.kr_Statistic .kr-task-select-filter-20260716 .select {
+    width: 400px;
+}
+
+.kr_Statistic .word-status-task-filter select,
+.kr_Statistic .kr-task-select-filter-20260716 select {
+    width: 400px;
+    height: 40px;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff !important;
+    font-size: 15px;
+}
+
+.kr_Statistic .word-status-task-filter .select2-container,
+.kr_Statistic .kr-task-select-filter-20260716 .select2-container {
+    width: 400px !important;
+    height: 40px;
+}
+
+.kr_Statistic .word-status-task-filter .select2-container .selection,
+.kr_Statistic .kr-task-select-filter-20260716 .select2-container .selection {
+    display: block;
+    width: 100%;
+}
+
+.kr_Statistic .word-status-task-filter .select2-container--default .select2-selection--single,
+.kr_Statistic .kr-task-select-filter-20260716 .select2-container--default .select2-selection--single {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.kr_Statistic .word-status-task-filter .select2-container--default .select2-selection--single .select2-selection__rendered,
+.kr_Statistic .kr-task-select-filter-20260716 .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #333;
+    font-size: 15px;
+    line-height: 38px;
+    padding-left: 12px;
+    padding-right: 36px;
+}
+
+.kr_Statistic .word-status-task-filter .select2-container--default .select2-selection--single .select2-selection__arrow,
+.kr_Statistic .kr-task-select-filter-20260716 .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+    top: 1px;
+    right: 0;
+    width: 38px;
+}
+
+.kr_Statistic .word-status-task-filter .select2-container--default .select2-selection--single .select2-selection__arrow b,
+.kr_Statistic .kr-task-select-filter-20260716 .select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #000 transparent transparent transparent !important;
+    border-style: solid !important;
+    border-width: 6px 5px 0 5px !important;
+    height: 0 !important;
+    left: 50% !important;
+    margin-left: -5px !important;
+    margin-top: -3px !important;
+    position: absolute !important;
+    top: 50% !important;
+    width: 0 !important;
+}
+
+/* 2026-07-16: Hide the select2 search input for task selects. */
+.select2-container--open .select2-dropdown .select2-search--dropdown {
+    display: none;
+}
+
+/* 2026-07-16: Force repaired tabs to show only the active panel. */
+.kr_Statistic .tab-panel.kr-tab-hidden-20260716 {
+    display: none !important;
+}
+
+.kr_Statistic .tab-panel.kr-tab-active-20260716 {
+    display: block !important;
+}
+
+.kr_Statistic .content_area > .tab-panel {
+    width: 1200px;
+    margin: 0 auto;
 }

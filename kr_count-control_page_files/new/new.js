@@ -2,6 +2,9 @@
    페이지 초기화
    ========================================================================== */
 $(document).ready(function () {
+    fnNormalizeKrStatisticTabs20260716();
+    fnPrepareTaskSelectControls20260716();
+    fnShowKrStatisticTab20260716($('.tab.mt30 > li.active').data('tab') || 'wordStatus');
     fnSyncSharedGroupData();
     fnCalcDiffValue();
     fnSetBadgeTotalCount();
@@ -14,22 +17,106 @@ $(document).ready(function () {
    탭 전환
    ========================================================================== */
 $(document).ready(function () {
-    $('.tab.mt30 > li').on('click', function (e) {
+    $('.tab.mt30 > li').off('click').on('click', function (e) {
         e.preventDefault();
 
         var target = $(this).data('tab');
-
-        $('.tab.mt30 > li').removeClass('active');
-        $(this).addClass('active');
-
-        $('.tab-panel').hide();
-        $('.tab-panel[data-panel="' + target + '"]').show();
+        fnShowKrStatisticTab20260716(target);
 
         if (target === 'buildStatus' && $('#includeBuildStatus').is(':empty')) {
             fnLoadBuildStatus();
         }
     });
 });
+
+/* ==========================================================================
+   2026-07-16: tab panel repair
+   ========================================================================== */
+function fnNormalizeKrStatisticTabs20260716() {
+    var $inner = $('.kr_Statistic .content_area > .inner').first();
+    var $tab = $inner.children('.tab.mt30').first();
+    var $wordPanel = $('.kr_Statistic .tab-panel[data-panel="wordStatus"]').first();
+    var $buildPanel = $('.kr_Statistic .tab-panel[data-panel="buildStatus"]').first();
+
+    if ($inner.length === 0 || $tab.length === 0 || $wordPanel.length === 0) {
+        return;
+    }
+
+    if ($wordPanel.parent()[0] !== $inner[0]) {
+        $wordPanel.insertAfter($tab);
+    }
+
+    fnRepairWordStatusInfoBox20260716($wordPanel);
+
+    $inner.children('.table_title_wrap').appendTo($wordPanel);
+    $inner.children('#includeWordStatus').appendTo($wordPanel);
+
+    if ($buildPanel.length > 0 && $buildPanel.parent()[0] !== $inner[0]) {
+        $buildPanel.insertAfter($wordPanel);
+    }
+}
+
+function fnRepairWordStatusInfoBox20260716($wordPanel) {
+    if ($wordPanel.children('.info_box.violet').length > 0) {
+        return;
+    }
+
+    var nodes = [];
+
+    $wordPanel.contents().each(function () {
+        if (this.nodeType === 3) {
+            if ($.trim(this.nodeValue) === 'c') {
+                $(this).remove();
+            }
+            return;
+        }
+
+        if (this.nodeType !== 1) {
+            return;
+        }
+
+        var $node = $(this);
+
+        if ($node.is('.table_title_wrap, #includeWordStatus, .tab-panel')) {
+            return false;
+        }
+
+        if (!$node.is('script')) {
+            nodes.push(this);
+        }
+    });
+
+    if (nodes.length > 0) {
+        $('<div class="info_box violet"></div>').append(nodes).prependTo($wordPanel);
+    }
+}
+
+function fnShowKrStatisticTab20260716(target) {
+    fnNormalizeKrStatisticTabs20260716();
+
+    var $inner = $('.kr_Statistic .content_area > .inner').first();
+    var $panels = $inner.children('.tab-panel[data-panel]');
+    var $targetPanel = $panels.filter('[data-panel="' + target + '"]');
+
+    if ($targetPanel.length === 0) {
+        return;
+    }
+
+    $('.tab.mt30 > li').removeClass('active');
+    $('.tab.mt30 > li[data-tab="' + target + '"]').addClass('active');
+
+    $panels
+        .removeClass('kr-tab-active-20260716')
+        .addClass('kr-tab-hidden-20260716')
+        .hide();
+
+    $targetPanel
+        .removeClass('kr-tab-hidden-20260716')
+        .addClass('kr-tab-active-20260716')
+        .show();
+
+    $inner.children('.table_title_wrap, #includeWordStatus').toggle(target === 'wordStatus');
+}
 
 // 구축통계 데이터 로드
 function fnLoadBuildStatus() {
@@ -269,9 +356,9 @@ function fnFillGaugeBarByRatio() {
 // build-Group-wrap 내 모든 행 데이터 수집
 function fnBuildStackedGauge() {
     var colors = [
-        '#48cae4', '#0077b6', // 집필+검토 - 집필중, 집필완료
-        '#92e6a7', '#208b3a', // 검토중, 검토완료 (공유 데이터, 한 번만 표시)
-        '#f8961e', '#e85d04'  // 국어원 검토 - 검토중, 검토완료
+        '#98cbf5 ', '#023e8a ', // 집필+검토 - 집필중, 집필완료
+        '#9eeccc ', '#0f9d5c ', // 검토중, 검토완료 (공유 데이터, 한 번만 표시)
+        '#f8ce85 ', '#e77728 '  // 국어원 검토 - 검토중, 검토완료
     ];
 
     var items = [];
@@ -345,4 +432,74 @@ function fnBuildStackedGauge() {
 // 셀 텍스트 → 숫자 변환 (콤마 제거)
 function fnToNum($cell) {
     return parseFloat($cell.text().trim().replace(/,/g, '')) || 0;
+}
+
+/* ==========================================================================
+   2026-07-16: wordStatus task select
+   ========================================================================== */
+$(document).ready(function () {
+    fnPrepareTaskSelectControls20260716();
+});
+
+function fnPrepareTaskSelectControls20260716() {
+    fnMarkTaskSelectFilters20260716();
+    fnApplyTaskSelect2Style20260716();
+}
+
+function fnAddWordStatusTaskSelect20260716() {
+    return;
+
+    var $infoBox = $('.kr_Statistic .tab-panel[data-panel="wordStatus"] .info_box.violet').first();
+
+    if ($infoBox.length === 0 || $('#taskList').length > 0) {
+        return;
+    }
+
+    var taskItems = [
+        { value: '0', text: '0_\uC804\uCCB4\uACFC\uC81C' },
+        { value: '-2', text: '1_\uAE30\uBCF8\uACFC\uC81C' },
+        { value: '75', text: '2015-2019 \uAD6C\uCD95*\uB0A8\uBD81 \uC804\uBB38 \uC6A9\uC5B4*\uC5B4\uBB38\uC5F0\uAD6C\uACFC' }
+    ];
+
+    var $filter = $('<div class="word-status-task-filter kr-task-select-filter-20260716"></div>');
+    var $label = $('<strong class="black1 mr30"></strong>').append(
+        $('<label for="taskList"></label>').text('\uACFC\uC81C')
+    );
+    var $selectWrap = $('<div class="select w400"></div>');
+    var $select = $('<select id="taskList" name="taskNo"></select>');
+
+    for (var i = 0; i < taskItems.length; i++) {
+        $select.append(
+            $('<option></option>')
+                .val(taskItems[i].value)
+                .text(taskItems[i].text)
+        );
+    }
+
+    $selectWrap.append($select);
+    $filter.append($label, $selectWrap);
+    $infoBox.prepend($filter);
+}
+
+function fnMarkTaskSelectFilters20260716() {
+    $('#deptList').closest('.info_box.violet > div').addClass('kr-task-select-filter-20260716');
+}
+
+function fnApplyTaskSelect2Style20260716() {
+    if (!$.fn.select2) {
+        return;
+    }
+
+    $('#deptList').each(function () {
+        var $select = $(this);
+
+        if ($select.data('select2')) {
+            return;
+        }
+
+        $select.select2({
+            width: '400px',
+            minimumResultsForSearch: Infinity
+        });
+    });
 }
