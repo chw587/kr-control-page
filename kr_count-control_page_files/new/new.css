@@ -96,8 +96,8 @@
 
 /* ---------- stats_board / graph table (공통) ---------- */
 .stats_board table.graph {
-    border-collapse: collapse;
     display: block;
+    border-collapse: collapse;
 }
 
 .stats_board table.graph tbody {
@@ -291,8 +291,8 @@
 }
 
 .kr_Statistic .build-Group-wrap .stats_board table.graph {
-    border-top: none;
     margin-top: 0px;
+    border-top: none;
 }
 
 

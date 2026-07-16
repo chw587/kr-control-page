@@ -2,9 +2,11 @@
    페이지 초기화
    ========================================================================== */
 $(document).ready(function () {
+    fnSyncSharedGroupData();
     fnCalcDiffValue();
     fnSetBadgeTotalCount();
     fnBuildStackedGauge();
+    fnFillGaugeBarByRatio();
 });
 
 
@@ -40,13 +42,106 @@ function fnLoadBuildStatus() {
         },
         success: function (data) {
             $('#includeBuildStatus').html(data);
+            fnSyncSharedGroupData();
             fnBuildStackedGauge();
+            fnFillGaugeBarByRatio();
         },
         error: function () {
             alert('오류가 발생하였습니다.');
         },
         complete: function () {
             spin.stop();
+        }
+    });
+}
+
+
+/* ==========================================================================
+   상태 라디오 전환 (전체 / 확정 / 확정 수정중)
+   ========================================================================== */
+
+// 260716: 상태별 데이터 캐시
+// T(전체)는 초기 HTML 값을 그대로 사용, C(확정)/E(확정 수정중)는 T를 임의 비율로 분할
+var wordStatusBaseData = null;
+
+$(document).ready(function () {
+    $('input[name="wordStatusType"]').on('change', function () {
+        var statusType = $(this).val();
+        fnLoadWordStatusByType(statusType);
+    });
+});
+
+// 상태값에 따른 테이블 데이터 갱신
+// TODO: 추후 DB 연동 시 이 함수 내부를 ajax 호출로 교체
+function fnLoadWordStatusByType(statusType) {
+    if (!wordStatusBaseData) {
+        var totalData = fnReadCurrentTableData();
+        var splitData = fnSplitTableData(totalData);
+
+        wordStatusBaseData = {
+            T: totalData,
+            C: splitData.C,
+            E: splitData.E
+        };
+    }
+
+    fnRenderTableData(wordStatusBaseData[statusType]);
+    fnCalcDiffValue();
+    fnSetBadgeTotalCount();
+}
+
+// 현재 DOM(초기 렌더링된 값)을 그대로 읽어서 T 데이터로 사용
+function fnReadCurrentTableData() {
+    var rows = [];
+
+    $('.table_wrap tbody tr').each(function () {
+        var rowValues = [];
+        var $cells = $(this).find('td.col-data');
+
+        for (var i = 0; i <= 5; i++) {
+            rowValues.push(fnToNum($cells.eq(i)));
+        }
+        rows.push(rowValues);
+    });
+
+    return rows;
+}
+
+// 260716: 임시 랜덤 분할 (DB 연동 전까지 사용)
+// T값을 임의 비율(30~70%)로 C/E로 분할 (C + E = T 항상 보장)
+function fnSplitTableData(totalData) {
+    var dataC = [];
+    var dataE = [];
+
+    for (var r = 0; r < totalData.length; r++) {
+        var rowC = [];
+        var rowE = [];
+
+        for (var c = 0; c < totalData[r].length; c++) {
+            var total = totalData[r][c];
+            var ratio = Math.random() * 0.4 + 0.3;
+            var cVal = Math.round(total * ratio);
+            var eVal = total - cVal;
+
+            rowC.push(cVal);
+            rowE.push(eVal);
+        }
+
+        dataC.push(rowC);
+        dataE.push(rowE);
+    }
+
+    return { C: dataC, E: dataE };
+}
+
+// 데이터를 테이블에 반영
+function fnRenderTableData(rows) {
+    $('.table_wrap tbody tr').each(function (rowIndex) {
+        var $cells = $(this).find('td.col-data');
+        var rowValues = rows[rowIndex];
+
+        for (var i = 0; i <= 5; i++) {
+            $cells.eq(i).text(rowValues[i].toLocaleString());
         }
     });
 }
@@ -107,41 +202,115 @@ function fnSetBadgeTotalCount() {
 
 
 /* ==========================================================================
+   build-Group-wrap 공유 데이터 동기화
+   ========================================================================== */
+// 260716: "검토" board의 검토중/검토완료 값을 원본으로 보고
+// "집필 + 검토" board의 동일 라벨(검토중/검토완료) 값을 그대로 맞춰줌
+// (국어원 검토 board는 별개 데이터라 대상에서 제외)
+function fnSyncSharedGroupData() {
+    var $boards = $('.build-Group-wrap > div');
+
+    var $sourceBoard = $boards.filter(function () {
+        return $(this).find('.table_title_wrap strong').first().text().trim() === '검토';
+    }).find('.stats_board');
+
+    var $targetBoard = $boards.filter(function () {
+        return $(this).find('.table_title_wrap strong').first().text().trim() === '집필 + 검토';
+    }).find('.stats_board');
+
+    if ($sourceBoard.length === 0 || $targetBoard.length === 0) return;
+
+    ['검토중', '검토완료'].forEach(function (label) {
+        var $sourceRow = $sourceBoard.find('table.graph tbody tr').filter(function () {
+            return $(this).find('th').text().trim() === label;
+        });
+
+        var $targetRow = $targetBoard.find('table.graph tbody tr').filter(function () {
+            return $(this).find('th').text().trim() === label;
+        });
+
+        if ($sourceRow.length === 0 || $targetRow.length === 0) return;
+
+        var sourceValue = fnToNum($sourceRow.find('td.num'));
+
+        $targetRow.find('td.num').text(sourceValue.toLocaleString() + '건');
+    });
+}
+
+
+/* ==========================================================================
+   build-Group-wrap 개별 게이지 바 비율 채우기
+   ========================================================================== */
+// 260716: 각 stats_board 안의 num 합계를 100%로 보고 g_bar 너비를 비율대로 채움
+function fnFillGaugeBarByRatio() {
+    $('.build-Group-wrap .stats_board').each(function () {
+        var $rows = $(this).find('table.graph tbody tr');
+
+        // 1) 해당 board 내 num 합계 구하기
+        var total = 0;
+        $rows.each(function () {
+            total += fnToNum($(this).find('td.num'));
+        });
+
+        // 2) 각 행의 비율만큼 g_bar 너비 세팅
+        $rows.each(function () {
+            var value = fnToNum($(this).find('td.num'));
+            var percent = total > 0 ? (value / total * 100) : 0;
+
+            $(this).find('.g_bar').css('width', percent + '%');
+        });
+    });
+}
+
+
+/* ==========================================================================
    build-total-wrap 누적 게이지 + 범례
    ========================================================================== */
-// 260715: build-Group-wrap 내 모든 행 데이터 수집
-// → 개별 g_bar 색상 지정 + 누적 게이지(build-total-wrap) 색상/비율 반영
+// build-Group-wrap 내 모든 행 데이터 수집
 function fnBuildStackedGauge() {
-    // 항목 순서대로 배정될 색상 팔레트 (필요시 색상값만 조정)
     var colors = [
         '#48cae4', '#0077b6', // 집필+검토 - 집필중, 집필완료
-        '#92e6a7', '#208b3a', // 집필+검토 - 검토중, 검토완료
-        '#92e6a7', '#208b3a', // 검토 - 검토중, 검토완료
-        '#ffb3c6', '#fb6f92'  // 국어원 검토 - 검토중, 검토완료
+        '#92e6a7', '#208b3a', // 검토중, 검토완료 (공유 데이터, 한 번만 표시)
+        '#f8961e', '#e85d04'  // 국어원 검토 - 검토중, 검토완료
     ];
 
     var items = [];
     var colorIndex = 0;
+    var seenSharedLabels = {};
 
     $('.build-Group-wrap > div').each(function () {
         var groupTitle = $(this).find('.table_title_wrap strong').first().text().trim();
+        var isSharedGroup = (groupTitle === '집필 + 검토' || groupTitle === '검토');
 
         $(this).find('.stats_board table.graph tbody tr').each(function () {
             var $row = $(this);
             var label = $row.find('th').text().trim();
             var value = fnToNum($row.find('td.num'));
-            var color = colors[colorIndex % colors.length];
 
-            // 260715: 개별 board의 g_bar 색상을 누적 게이지와 동일하게 지정
+            var isSharedLabel = isSharedGroup && (label === '검토중' || label === '검토완료');
+
+            if (isSharedLabel) {
+                if (seenSharedLabels[label]) {
+                    $row.find('.g_bar').css('background-color', seenSharedLabels[label].color);
+                    return;
+                }
+            }
+
+            var color = colors[colorIndex % colors.length];
             $row.find('.g_bar').css('background-color', color);
+            colorIndex++;
+
+            var displayLabel = isSharedLabel ? label : (groupTitle + ' - ' + label);
 
             items.push({
-                label: groupTitle + ' - ' + label,
+                label: displayLabel,
                 value: value,
                 color: color
             });
 
-            colorIndex++;
+            if (isSharedLabel) {
+                seenSharedLabels[label] = { color: color };
+            }
         });
     });
 
@@ -151,7 +320,7 @@ function fnBuildStackedGauge() {
     var $legend = $('#totalGaugeLegend').empty();
 
     items.forEach(function (item) {
-        // 260715: total 대비 비율로 폭 계산 → 항목들 합이 100%라 막대가 꽉 채워짐
+        // total 대비 비율로 폭 계산
         var percent = total > 0 ? (item.value / total * 100) : 0;
 
         $gauge.append(
@@ -169,7 +338,6 @@ function fnBuildStackedGauge() {
 
     $('.build-total-wrap .m_tit .black9').text('[ 총 ' + total.toLocaleString() + '건 ]');
 }
-
 
 /* ==========================================================================
    공통 유틸
